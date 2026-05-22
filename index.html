@@ -28,6 +28,7 @@
 
     <nav aria-label="主要ナビゲーション">
       <ul class="nav__menu">
+        <li><a href="#engraving">追加彫刻</a></li>
         <li><a href="#services">お墓・新規</a></li>
         <li><a href="#services">クリーニング</a></li>
         <li><a href="#services">地震対策</a></li>
@@ -91,6 +92,32 @@
     <span class="hero__corner">© Shoji Sekizaiten 1948 — Now</span>
   </section>
 
+  <!-- ============== ENGRAVING CTA ============== -->
+  <section class="engraving-cta" id="engraving" aria-labelledby="engraving-cta-title" data-screen-label="Engraving">
+    <div class="container engraving-cta__grid">
+      <div class="engraving-cta__text reveal">
+        <p class="engraving-cta__label">For Bereaved Families — 追加彫刻のご依頼</p>
+        <h2 id="engraving-cta-title" class="engraving-cta__title mincho">
+          ご逝去に伴う、<br />
+          追加彫刻を承ります。
+        </h2>
+        <p class="engraving-cta__lead">
+          戒名・俗名・没年月日のご追加を、心を込めて彫刻いたします。<br />
+          現地でのご相談・お見積もりは無料です。お急ぎの場合もまずはご連絡ください。
+        </p>
+      </div>
+      <div class="engraving-cta__actions reveal">
+        <a class="engraving-cta__tel" href="tel:0120-3333-845">
+          <small>お電話でのご依頼</small>
+          <span class="engraving-cta__tel-num">0120&hairsp;-&hairsp;3333&hairsp;-&hairsp;845</span>
+        </a>
+        <a class="btn btn--dark engraving-cta__btn" href="#contact">
+          お問い合わせフォーム <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============== SERVICES ============== -->
   <section class="section section--soft" id="services" data-screen-label="Services">
     <div class="container">
@@ -109,9 +136,24 @@
         <!-- 1 -->
         <article class="service reveal">
           <div class="service__media">
+            <div class="service__placeholder" aria-hidden="true"><span>images / service-engraving.jpg</span></div>
+            <img class="service__img" src="images/service-engraving.jpg" alt="追加彫刻の写真" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="service__index">01</span>
+          </div>
+          <div class="service__body">
+            <div class="service__cat">Engraving</div>
+            <h3 class="service__title mincho">追加彫刻</h3>
+            <p class="service__desc">ご逝去に合わせ、戒名・没年月日などを心を込めて彫刻いたします。現地でのご相談・お見積もりは無料です。</p>
+            <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- 2 -->
+        <article class="service reveal">
+          <div class="service__media">
             <div class="service__placeholder" aria-hidden="true"><span>images / service-new.jpg</span></div>
             <img class="service__img" src="images/service-new.jpg" alt="新規のお墓の施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
-            <span class="service__index">01</span>
+            <span class="service__index">02</span>
           </div>
           <div class="service__body">
             <div class="service__cat">Memorial / New</div>
@@ -121,12 +163,12 @@
           </div>
         </article>
 
-        <!-- 2 -->
+        <!-- 3 -->
         <article class="service reveal">
           <div class="service__media">
             <div class="service__placeholder" aria-hidden="true"><span>images / service-cleaning.jpg</span></div>
             <img class="service__img" src="images/service-cleaning.jpg" alt="お墓クリーニングの施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
-            <span class="service__index">02</span>
+            <span class="service__index">03</span>
           </div>
           <div class="service__body">
             <div class="service__cat">Cleaning</div>
@@ -136,12 +178,12 @@
           </div>
         </article>
 
-        <!-- 3 -->
+        <!-- 4 -->
         <article class="service reveal">
           <div class="service__media">
             <div class="service__placeholder" aria-hidden="true"><span>images / service-quake.jpg</span></div>
             <img class="service__img" src="images/service-quake.jpg" alt="地震対策・免震パットの施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
-            <span class="service__index">03</span>
+            <span class="service__index">04</span>
           </div>
           <div class="service__body">
             <div class="service__cat">Earthquake</div>
@@ -151,32 +193,17 @@
           </div>
         </article>
 
-        <!-- 4 -->
+        <!-- 5 -->
         <article class="service reveal">
           <div class="service__media">
             <div class="service__placeholder" aria-hidden="true"><span>images / service-reform.jpg</span></div>
             <img class="service__img" src="images/service-reform.jpg" alt="お墓リフォームの施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
-            <span class="service__index">04</span>
+            <span class="service__index">05</span>
           </div>
           <div class="service__body">
             <div class="service__cat">Reform</div>
             <h3 class="service__title mincho">リフォーム</h3>
             <p class="service__desc">老朽化した墓石を修繕し、本来の美しさと品格を取り戻します。</p>
-            <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
-          </div>
-        </article>
-
-        <!-- 5 -->
-        <article class="service reveal">
-          <div class="service__media">
-            <div class="service__placeholder" aria-hidden="true"><span>images / service-engraving.jpg</span></div>
-            <img class="service__img" src="images/service-engraving.jpg" alt="追加彫刻の写真" loading="lazy" onerror="this.dataset.fallback='true'" />
-            <span class="service__index">05</span>
-          </div>
-          <div class="service__body">
-            <div class="service__cat">Engraving</div>
-            <h3 class="service__title mincho">追加彫刻</h3>
-            <p class="service__desc">ご逝去に合わせ、戒名・没年月日などを心を込めて彫刻いたします。</p>
             <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
           </div>
         </article>
