@@ -707,6 +707,97 @@
     html { scroll-behavior: auto; }
   }
 
+  /* ---------- Projects (stone explorations) ---------- */
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(20px, 2.4vw, 36px);
+  }
+  .project {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+  }
+  .project__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #e8e5dd;
+    border-bottom: 1px solid var(--rule);
+  }
+  .project__img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .8s cubic-bezier(.2,.7,.2,1);
+  }
+  .project:hover .project__img { transform: scale(1.04); }
+  .project__placeholder {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 12px, rgba(26,26,26,0.05) 12px 13px),
+      linear-gradient(180deg, #e8e5dd 0%, #d9d5cb 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #6a665c;
+  }
+  .project__placeholder span {
+    font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    border: 1px solid rgba(26,26,26,0.18);
+    background: rgba(247,246,243,0.5);
+    padding: 6px 14px;
+  }
+  .project__img[data-fallback="true"] { display: none; }
+  .project__index {
+    position: absolute; top: 16px; left: 16px;
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(247,246,243,0.9);
+    background: rgba(26,26,26,0.55);
+    backdrop-filter: blur(4px);
+    padding: 4px 10px;
+    border: 1px solid rgba(247,246,243,0.2);
+  }
+  .project__body {
+    padding: 32px clamp(22px, 2.4vw, 36px) 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+  .project__cat {
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--stone);
+    text-transform: uppercase;
+  }
+  .project__title {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-size: 24px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    margin: 0;
+  }
+  .project__desc {
+    font-size: 13px;
+    line-height: 2;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .project__tag {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 1024px) {
     .services { grid-template-columns: repeat(2, 1fr); }
@@ -744,6 +835,7 @@
     .section__head { grid-template-columns: 1fr; gap: 18px; align-items: start; }
 
     .about__grid { grid-template-columns: 1fr; }
+    .projects { grid-template-columns: 1fr; }
     .contact__grid { grid-template-columns: 1fr; }
     .footer__grid { grid-template-columns: 1fr; gap: 32px; }
     .footer__bottom { flex-direction: column; gap: 8px; }
@@ -782,6 +874,7 @@
         <li><a href="#services">地震対策</a></li>
         <li><a href="#services">リフォーム</a></li>
         <li><a href="#works">施工例</a></li>
+        <li><a href="#projects">プロジェクト</a></li>
         <li><a href="#about">会社概要</a></li>
       </ul>
     </nav>
@@ -1037,12 +1130,66 @@
     </div>
   </section>
 
+  <!-- ============== PROJECTS ============== -->
+  <section class="section section--soft" id="projects" data-screen-label="Projects">
+    <div class="container">
+      <header class="section__head">
+        <div>
+          <div class="section__num">— 05 / Projects</div>
+          <h2 class="section__title">石の可能性を、<br />探るプロジェクト。</h2>
+        </div>
+        <p class="section__desc">
+          墓石づくりで培った石への知識と職人の手仕事を、
+          くらしのなかのあたらしい使い方へ。
+          石材店からはじまる、小さな実験のプロジェクトです。
+        </p>
+      </header>
+
+      <div class="projects">
+        <article class="project reveal">
+          <div class="project__media">
+            <div class="project__placeholder" aria-hidden="true"><span>images / project-pizza.jpg</span></div>
+            <img class="project__img" src="images/project-pizza.jpg" alt="石を組み上げたピザ窯と燃える炎" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="project__index">01</span>
+          </div>
+          <div class="project__body">
+            <div class="project__cat">Pizza Oven</div>
+            <h3 class="project__title mincho">ピザ窯プロジェクト</h3>
+            <p class="project__desc">
+              石を組み上げて、ピザ窯をつくる試み。
+              蓄熱性と耐火性という石本来の特性を、
+              日々のくらしと食卓のなかで活かしています。
+            </p>
+            <div class="project__tag">— Ongoing</div>
+          </div>
+        </article>
+
+        <article class="project reveal">
+          <div class="project__media">
+            <div class="project__placeholder" aria-hidden="true"><span>images / project-speaker.jpg</span></div>
+            <img class="project__img" src="images/project-speaker.jpg" alt="御影石を素材にしたスピーカーの試作" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="project__index">02</span>
+          </div>
+          <div class="project__body">
+            <div class="project__cat">Stone Speaker</div>
+            <h3 class="project__title mincho">石のスピーカー制作</h3>
+            <p class="project__desc">
+              御影石を筐体に用いたスピーカーづくり。
+              石の重みと響きを、音という新しいかたちで届ける取り組みです。
+            </p>
+            <div class="project__tag">— Ongoing</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ============== CONTACT ============== -->
   <section class="contact" id="contact" data-screen-label="Contact">
     <div class="container">
       <div class="contact__grid">
         <div>
-          <p class="contact__eyebrow reveal">05 — Contact</p>
+          <p class="contact__eyebrow reveal">06 — Contact</p>
           <h2 class="contact__title reveal">
             お気軽に<br />
             ご相談ください。
@@ -1109,6 +1256,7 @@
         <ul class="footer__list">
           <li><a href="#about">会社概要</a></li>
           <li><a href="#works">施工例</a></li>
+          <li><a href="#projects">プロジェクト</a></li>
           <li><a href="#contact">お問い合わせ</a></li>
         </ul>
       </div>
