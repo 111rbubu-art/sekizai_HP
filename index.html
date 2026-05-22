@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>庄司石材店 — 東京杉並区久我山のお墓づくり</title>
+<meta name="description" content="創業以来まごころを込めてお墓づくり・修繕・クリーニングを承る、東京杉並区久我山の石材店です。" />
+<meta property="og:title" content="庄司石材店 — 東京杉並区久我山のお墓づくり" />
+<meta property="og:description" content="創業以来まごころを込めてお墓づくり・修繕・クリーニングを承る、東京杉並区久我山の石材店です。" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="images/og-image.jpg" />
+<meta name="theme-color" content="#1a1a1a" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1a'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23f7f6f3' text-anchor='middle'%3E庄%3C/text%3E%3C/svg%3E" />
+
+<style>
+  /* ---------- Reset & base ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+    color: #1a1a1a;
+    background: #f7f6f3;
+    line-height: 1.8;
+    letter-spacing: 0.08em;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; }
+
+  :root {
+    --bg: #f7f6f3;
+    --bg-soft: #efede8;
+    --ink: #1a1a1a;
+    --ink-soft: #2a2a2a;
+    --stone: #666666;
+    --rule: rgba(26,26,26,0.14);
+    --rule-strong: rgba(26,26,26,0.5);
+    --container: 1240px;
+    --pad: clamp(20px, 4vw, 56px);
+  }
+
+  .mincho {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+  }
+
+  .en {
+    font-family: Georgia, "Times New Roman", serif;
+    font-feature-settings: "liga", "kern";
+    letter-spacing: 0.18em;
+  }
+
+  .eyebrow {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+
+  .container {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding-left: var(--pad);
+    padding-right: var(--pad);
+  }
+
+  .rule { height: 1px; background: var(--rule); border: 0; margin: 0; }
+
+  /* ---------- Skip link ---------- */
+  .skip {
+    position: absolute; left: -9999px; top: 0;
+    background: #1a1a1a; color: #f7f6f3; padding: 8px 14px;
+  }
+  .skip:focus { left: 16px; top: 16px; z-index: 100; }
+
+  /* ---------- Navigation ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(247,246,243,0.92);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+  .brand { display: flex; align-items: baseline; gap: 14px; }
+  .brand__mark {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-size: 20px;
+    letter-spacing: 0.18em;
+  }
+  .brand__en {
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--stone);
+  }
+  .nav__menu {
+    display: flex;
+    align-items: center;
+    gap: clamp(18px, 2.4vw, 36px);
+    list-style: none;
+    margin: 0; padding: 0;
+  }
+  .nav__menu a {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--ink);
+    padding: 6px 2px;
+    border-bottom: 1px solid transparent;
+    transition: border-color .25s ease, color .25s ease;
+  }
+  .nav__menu a:hover { border-bottom-color: var(--ink); }
+  .nav__tel {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    padding: 8px 16px;
+    border: 1px solid var(--ink);
+    transition: background .25s ease, color .25s ease;
+  }
+  .nav__tel:hover { background: var(--ink); color: var(--bg); }
+  .nav__tel small { font-family: system-ui, sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--stone); }
+  .nav__tel:hover small { color: rgba(247,246,243,0.7); }
+
+  .nav__burger {
+    display: none;
+    background: transparent; border: 0; padding: 8px;
+    width: 40px; height: 40px;
+  }
+  .nav__burger span {
+    display: block; width: 22px; height: 1px; background: var(--ink); margin: 5px auto;
+    transition: transform .3s ease, opacity .3s ease;
+  }
+  .nav.is-open .nav__burger span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .nav.is-open .nav__burger span:nth-child(2) { opacity: 0; }
+  .nav.is-open .nav__burger span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: #0e0e0e;
+    color: #f7f6f3;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid #000;
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: clamp(40px, 6vw, 96px);
+    padding-top: clamp(80px, 12vw, 160px);
+    padding-bottom: clamp(80px, 12vw, 160px);
+    align-items: end;
+  }
+  .hero__eyebrow {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: rgba(247,246,243,0.55);
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .hero__eyebrow::before {
+    content: ""; display: inline-block;
+    width: 28px; height: 1px; background: rgba(247,246,243,0.4);
+  }
+  .hero__title {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(40px, 6.4vw, 88px);
+    line-height: 1.25;
+    letter-spacing: 0.08em;
+    margin: 0 0 32px;
+  }
+  .hero__title em {
+    font-style: normal;
+    color: #d8d3c8;
+  }
+  .hero__lead {
+    max-width: 38ch;
+    font-size: 15px;
+    line-height: 2.1;
+    letter-spacing: 0.1em;
+    color: rgba(247,246,243,0.78);
+    margin: 0 0 44px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 16px 28px;
+    border: 1px solid rgba(247,246,243,0.6);
+    color: #f7f6f3;
+    font-family: Georgia, serif;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    transition: background .3s ease, color .3s ease, border-color .3s ease, padding .3s ease;
+  }
+  .btn .arrow { transition: transform .35s ease; display: inline-block; }
+  .btn:hover { background: #f7f6f3; color: #1a1a1a; border-color: #f7f6f3; }
+  .btn:hover .arrow { transform: translateX(6px); }
+
+  .btn--dark {
+    color: #1a1a1a; border-color: var(--ink);
+  }
+  .btn--dark:hover { background: #1a1a1a; color: #f7f6f3; }
+
+  .hero__stats {
+    border-left: 1px solid rgba(247,246,243,0.18);
+    padding-left: clamp(24px, 3vw, 48px);
+    display: grid;
+    gap: 40px;
+    align-self: stretch;
+    align-content: end;
+  }
+  .stat__label {
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(247,246,243,0.5);
+    margin-bottom: 12px;
+  }
+  .stat__value {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-size: clamp(28px, 3.4vw, 42px);
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+  }
+  .stat__value small {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    color: rgba(247,246,243,0.6);
+    margin-left: 6px;
+  }
+  .stat__sub {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: rgba(247,246,243,0.55);
+    margin-top: 8px;
+  }
+
+  .hero__corner {
+    position: absolute; left: var(--pad); bottom: 24px;
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(247,246,243,0.4);
+    text-transform: uppercase;
+  }
+  .hero__corner-right {
+    position: absolute; right: var(--pad); top: 24px;
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(247,246,243,0.4);
+    text-transform: uppercase;
+  }
+
+  /* ---------- Section heading ---------- */
+  .section {
+    padding-top: clamp(80px, 10vw, 140px);
+    padding-bottom: clamp(80px, 10vw, 140px);
+  }
+  .section--soft { background: var(--bg-soft); }
+
+  .section__head {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: clamp(24px, 4vw, 80px);
+    align-items: end;
+    margin-bottom: clamp(48px, 6vw, 88px);
+  }
+  .section__num {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--stone);
+  }
+  .section__title {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(28px, 3.6vw, 48px);
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    margin: 16px 0 0;
+  }
+  .section__desc {
+    font-size: 14px;
+    line-height: 2.1;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    max-width: 50ch;
+  }
+
+  /* ---------- Services grid ---------- */
+  .services {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+  .service {
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+  }
+  .service__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #e8e5dd;
+  }
+  .service__img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .8s cubic-bezier(.2,.7,.2,1);
+  }
+  .service:hover .service__img { transform: scale(1.06); }
+  .service__placeholder {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 12px, rgba(26,26,26,0.05) 12px 13px),
+      linear-gradient(180deg, #e8e5dd 0%, #d9d5cb 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #6a665c;
+    font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: lowercase;
+  }
+  .service__placeholder span {
+    border: 1px solid rgba(26,26,26,0.18);
+    padding: 6px 14px;
+    background: rgba(247,246,243,0.5);
+  }
+  /* Fallback: when <img> fails to load, show the placeholder beneath */
+  .service__img[data-fallback="true"] { display: none; }
+
+  .service__index {
+    position: absolute; top: 16px; left: 16px;
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(247,246,243,0.85);
+    background: rgba(26,26,26,0.55);
+    backdrop-filter: blur(4px);
+    padding: 4px 10px;
+    border: 1px solid rgba(247,246,243,0.2);
+  }
+  .service__body {
+    padding: 32px clamp(20px, 2vw, 32px) 36px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .service__cat {
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--stone);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .service__title {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-size: 22px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    margin: 0 0 14px;
+  }
+  .service__desc {
+    font-size: 13px;
+    line-height: 2;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+    flex: 1;
+  }
+  .service__more {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: Georgia, serif;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+    align-self: flex-start;
+    transition: gap .3s ease, letter-spacing .3s ease;
+  }
+  .service__more:hover { gap: 16px; }
+  .service__more .arrow { transition: transform .3s ease; }
+  .service:hover .service__more .arrow { transform: translateX(4px); }
+
+  /* ---------- About ---------- */
+  .about {
+    background: var(--bg);
+  }
+  .about__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 120px);
+    align-items: center;
+  }
+  .about__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: #e8e5dd;
+    overflow: hidden;
+  }
+  .about__media img { width: 100%; height: 100%; object-fit: cover; }
+  .about__media-frame {
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--rule);
+    pointer-events: none;
+  }
+  .about__media-placeholder {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 14px, rgba(26,26,26,0.05) 14px 15px),
+      linear-gradient(160deg, #e8e5dd 0%, #d9d5cb 100%);
+    display: flex; align-items: flex-end; justify-content: flex-start;
+    padding: 24px;
+    color: #6a665c;
+  }
+  .about__media-placeholder span {
+    font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    border: 1px solid rgba(26,26,26,0.18);
+    background: rgba(247,246,243,0.7);
+    padding: 6px 12px;
+  }
+  .about__eyebrow {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--stone);
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px;
+  }
+  .about__eyebrow::before {
+    content: ""; width: 28px; height: 1px; background: var(--stone);
+  }
+  .about__title {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(28px, 3.4vw, 44px);
+    line-height: 1.55;
+    letter-spacing: 0.08em;
+    margin: 0 0 32px;
+  }
+  .about__body p {
+    font-size: 14px;
+    line-height: 2.2;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+    max-width: 44ch;
+  }
+  .about__values {
+    list-style: none; margin: 36px 0 44px; padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .about__values li {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .about__values .k {
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--stone);
+    text-transform: uppercase;
+  }
+  .about__values .v {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-size: 16px;
+    letter-spacing: 0.1em;
+  }
+  .about__values .v small {
+    display: block;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--stone);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+    line-height: 1.7;
+  }
+
+  /* ---------- Works strip ---------- */
+  .works {
+    background: var(--bg);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .works__head {
+    display: flex; align-items: end; justify-content: space-between; gap: 24px;
+    padding-top: 80px; padding-bottom: 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .works__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .work {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-right: 1px solid var(--rule);
+    background: #e8e5dd;
+  }
+  .work:last-child { border-right: 0; }
+  .work__img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+  .work:hover .work__img { transform: scale(1.05); }
+  .work__placeholder {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(135deg, transparent 0 12px, rgba(26,26,26,0.05) 12px 13px),
+      linear-gradient(200deg, #e8e5dd 0%, #d9d5cb 100%);
+  }
+  .work__caption {
+    position: absolute; left: 16px; bottom: 16px; right: 16px;
+    color: #1a1a1a;
+    background: rgba(247,246,243,0.92);
+    padding: 10px 14px;
+    border: 1px solid var(--rule);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    display: flex; justify-content: space-between; gap: 12px;
+  }
+  .work__caption .num { font-family: Georgia, serif; color: var(--stone); }
+
+  /* ---------- Contact ---------- */
+  .contact {
+    background: #0e0e0e;
+    color: #f7f6f3;
+    padding-top: clamp(80px, 10vw, 140px);
+    padding-bottom: clamp(80px, 10vw, 140px);
+    position: relative;
+  }
+  .contact__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 120px);
+    align-items: start;
+  }
+  .contact__eyebrow {
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: rgba(247,246,243,0.55);
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .contact__eyebrow::before { content: ""; width: 28px; height: 1px; background: rgba(247,246,243,0.4); }
+  .contact__title {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4.4vw, 60px);
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+    margin: 0 0 28px;
+  }
+  .contact__lead {
+    font-size: 14px;
+    line-height: 2.1;
+    letter-spacing: 0.12em;
+    color: rgba(247,246,243,0.7);
+    max-width: 36ch;
+    margin: 0;
+  }
+  .tel-block {
+    border: 1px solid rgba(247,246,243,0.25);
+    padding: 36px clamp(24px, 3vw, 44px);
+    background: rgba(247,246,243,0.02);
+  }
+  .tel-block__label {
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.36em;
+    color: rgba(247,246,243,0.55);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .tel-block__label .dot {
+    display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; background: #cdb87d;
+  }
+  .tel-block__num {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(36px, 5.2vw, 64px);
+    letter-spacing: 0.06em;
+    color: #f7f6f3;
+    line-height: 1.1;
+    margin: 0 0 6px;
+    display: inline-block;
+  }
+  .tel-block__hours {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: rgba(247,246,243,0.6);
+    margin: 18px 0 0;
+  }
+  .tel-block__hours strong { color: rgba(247,246,243,0.85); font-weight: 500; letter-spacing: 0.16em; }
+  .contact__meta {
+    margin-top: 28px;
+    display: grid; grid-template-columns: 80px 1fr; gap: 18px 24px;
+    border-top: 1px solid rgba(247,246,243,0.15);
+    padding-top: 28px;
+  }
+  .contact__meta dt {
+    font-family: Georgia, serif;
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(247,246,243,0.5);
+  }
+  .contact__meta dd {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    line-height: 1.9;
+    color: rgba(247,246,243,0.88);
+  }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    background: #050505;
+    color: rgba(247,246,243,0.65);
+    padding: 56px 0 40px;
+    border-top: 1px solid #000;
+  }
+  .footer__grid {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px;
+    align-items: start;
+  }
+  .footer__brand {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+    font-size: 18px;
+    letter-spacing: 0.2em;
+    color: #f7f6f3;
+    margin: 0 0 10px;
+  }
+  .footer__sub {
+    font-family: Georgia, serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(247,246,243,0.45);
+    margin: 0 0 18px;
+  }
+  .footer__address {
+    font-style: normal;
+    font-size: 12px;
+    line-height: 1.9;
+    letter-spacing: 0.1em;
+  }
+  .footer__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .footer__list a { font-size: 12px; letter-spacing: 0.16em; color: rgba(247,246,243,0.7); }
+  .footer__list a:hover { color: #f7f6f3; }
+  .footer__heading {
+    font-family: Georgia, serif;
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(247,246,243,0.45);
+    margin: 0 0 18px;
+  }
+  .footer__bottom {
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid rgba(247,246,243,0.1);
+    display: flex; justify-content: space-between; gap: 16px;
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: rgba(247,246,243,0.4);
+  }
+
+  /* ---------- Reveal animation ---------- */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1024px) {
+    .services { grid-template-columns: repeat(2, 1fr); }
+    .works__grid { grid-template-columns: repeat(2, 1fr); }
+    .work:nth-child(2n) { border-right: 0; }
+    .work:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
+  }
+
+  @media (max-width: 1024px) {
+    .nav__menu, .nav__tel { display: none; }
+    .nav__burger { display: inline-block; }
+
+    .nav.is-open .nav__menu {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 72px; left: 0; right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
+      padding: 24px var(--pad) 32px;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .nav.is-open .nav__menu a { font-size: 15px; }
+    .nav.is-open .nav__tel {
+      display: inline-flex;
+      margin-top: 12px;
+    }
+  }
+
+  @media (max-width: 820px) {
+    body { font-size: 14px; }
+    .hero__grid { grid-template-columns: 1fr; align-items: start; gap: 56px; }
+    .hero__stats { border-left: 0; padding-left: 0; border-top: 1px solid rgba(247,246,243,0.18); padding-top: 36px; }
+    .section__head { grid-template-columns: 1fr; gap: 18px; align-items: start; }
+
+    .about__grid { grid-template-columns: 1fr; }
+    .contact__grid { grid-template-columns: 1fr; }
+    .footer__grid { grid-template-columns: 1fr; gap: 32px; }
+    .footer__bottom { flex-direction: column; gap: 8px; }
+  }
+
+  @media (max-width: 560px) {
+    .services { grid-template-columns: 1fr; }
+    .works__grid { grid-template-columns: 1fr; }
+    .work { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .work:last-child { border-bottom: 0; }
+
+    .hero__corner, .hero__corner-right { display: none; }
+    .tel-block__num { font-size: 36px; }
+  }
+
+  /* Selection */
+  ::selection { background: #1a1a1a; color: #f7f6f3; }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">本文へスキップ</a>
+
+<!-- ============== NAV ============== -->
+<header class="nav" id="nav" data-screen-label="Navigation">
+  <div class="container nav__inner">
+    <a href="#top" class="brand" aria-label="庄司石材店 ホーム">
+      <span class="brand__mark mincho">庄司石材店</span>
+      <span class="brand__en">Shoji Sekizaiten</span>
+    </a>
+
+    <nav aria-label="主要ナビゲーション">
+      <ul class="nav__menu">
+        <li><a href="#services">お墓・新規</a></li>
+        <li><a href="#services">クリーニング</a></li>
+        <li><a href="#services">地震対策</a></li>
+        <li><a href="#services">リフォーム</a></li>
+        <li><a href="#works">施工例</a></li>
+        <li><a href="#about">会社概要</a></li>
+      </ul>
+    </nav>
+
+    <a class="nav__tel" href="tel:0120-3333-845">
+      <small>tel.</small>
+      0120&hairsp;-&hairsp;3333&hairsp;-&hairsp;845
+    </a>
+
+    <button class="nav__burger" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============== HERO ============== -->
+  <section class="hero" id="top" data-screen-label="Hero">
+    <span class="hero__corner-right">No. 001 — Hero</span>
+    <div class="container hero__grid">
+      <div>
+        <p class="hero__eyebrow reveal">Shoji Sekizaiten — Tokyo Suginami</p>
+        <h1 class="hero__title reveal">
+          まごころを込めた<br />
+          <em>お墓づくり</em>
+        </h1>
+        <p class="hero__lead reveal">
+          創業以来、大切な方へのご供養を<br />
+          石という素材に込めてお届けしています。
+        </p>
+        <a class="btn reveal" href="#services">
+          サービスを見る <span class="arrow">→</span>
+        </a>
+      </div>
+
+      <aside class="hero__stats reveal" aria-label="店舗概要">
+        <div>
+          <div class="stat__label">Partner Temples</div>
+          <div class="stat__value">10<small>+</small></div>
+          <div class="stat__sub">提携寺院</div>
+        </div>
+        <div>
+          <div class="stat__label">Location</div>
+          <div class="stat__value mincho">杉並区 久我山</div>
+          <div class="stat__sub">東京都・5-5-12</div>
+        </div>
+        <div>
+          <div class="stat__label">Hours</div>
+          <div class="stat__value mincho">8:00 — 17:00</div>
+          <div class="stat__sub">平日のみ（14・15日、土日祝を除く）</div>
+        </div>
+      </aside>
+    </div>
+    <span class="hero__corner">© Shoji Sekizaiten 1948 — Now</span>
+  </section>
+
+  <!-- ============== SERVICES ============== -->
+  <section class="section section--soft" id="services" data-screen-label="Services">
+    <div class="container">
+      <header class="section__head">
+        <div>
+          <div class="section__num">— 02 / Services</div>
+          <h2 class="section__title">石とともに、<br />寄り添うかたち。</h2>
+        </div>
+        <p class="section__desc">
+          新規のお墓づくりから、長年お守りしてきたお墓のクリーニング・リフォームまで。
+          ご家族のお気持ちに寄り添いながら、確かな技術でお応えします。
+        </p>
+      </header>
+
+      <div class="services">
+        <!-- 1 -->
+        <article class="service reveal">
+          <div class="service__media">
+            <div class="service__placeholder" aria-hidden="true"><span>images / service-new.jpg</span></div>
+            <img class="service__img" src="images/service-new.jpg" alt="新規のお墓の施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="service__index">01</span>
+          </div>
+          <div class="service__body">
+            <div class="service__cat">Memorial / New</div>
+            <h3 class="service__title mincho">お墓 新規</h3>
+            <p class="service__desc">オーダーメイドのお墓を、石種選びから設計・施工まで丁寧にご提案します。</p>
+            <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- 2 -->
+        <article class="service reveal">
+          <div class="service__media">
+            <div class="service__placeholder" aria-hidden="true"><span>images / service-cleaning.jpg</span></div>
+            <img class="service__img" src="images/service-cleaning.jpg" alt="お墓クリーニングの施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="service__index">02</span>
+          </div>
+          <div class="service__body">
+            <div class="service__cat">Cleaning</div>
+            <h3 class="service__title mincho">クリーニング</h3>
+            <p class="service__desc">専門技術による洗浄で、苔やシミを取り除き、お墓を美しく整えます。</p>
+            <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- 3 -->
+        <article class="service reveal">
+          <div class="service__media">
+            <div class="service__placeholder" aria-hidden="true"><span>images / service-quake.jpg</span></div>
+            <img class="service__img" src="images/service-quake.jpg" alt="地震対策・免震パットの施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="service__index">03</span>
+          </div>
+          <div class="service__body">
+            <div class="service__cat">Earthquake</div>
+            <h3 class="service__title mincho">地震対策・免震パット</h3>
+            <p class="service__desc">震度7対応の免震施工で、大切なお墓を地震の揺れから守ります。</p>
+            <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- 4 -->
+        <article class="service reveal">
+          <div class="service__media">
+            <div class="service__placeholder" aria-hidden="true"><span>images / service-reform.jpg</span></div>
+            <img class="service__img" src="images/service-reform.jpg" alt="お墓リフォームの施工写真" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="service__index">04</span>
+          </div>
+          <div class="service__body">
+            <div class="service__cat">Reform</div>
+            <h3 class="service__title mincho">リフォーム</h3>
+            <p class="service__desc">老朽化した墓石を修繕し、本来の美しさと品格を取り戻します。</p>
+            <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <article class="service reveal">
+          <div class="service__media">
+            <div class="service__placeholder" aria-hidden="true"><span>images / service-engraving.jpg</span></div>
+            <img class="service__img" src="images/service-engraving.jpg" alt="追加彫刻の写真" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="service__index">05</span>
+          </div>
+          <div class="service__body">
+            <div class="service__cat">Engraving</div>
+            <h3 class="service__title mincho">追加彫刻</h3>
+            <p class="service__desc">ご逝去に合わせ、戒名・没年月日などを心を込めて彫刻いたします。</p>
+            <a class="service__more" href="#contact">詳しく見る <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- 6 -->
+        <article class="service reveal">
+          <div class="service__media">
+            <div class="service__placeholder" aria-hidden="true"><span>images / service-works.jpg</span></div>
+            <img class="service__img" src="images/service-works.jpg" alt="施工例の写真" loading="lazy" onerror="this.dataset.fallback='true'" />
+            <span class="service__index">06</span>
+          </div>
+          <div class="service__body">
+            <div class="service__cat">Works</div>
+            <h3 class="service__title mincho">施工例</h3>
+            <p class="service__desc">これまでお手伝いさせていただいた施工の実績を写真でご覧いただけます。</p>
+            <a class="service__more" href="#works">詳しく見る <span class="arrow">→</span></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== ABOUT ============== -->
+  <section class="section about" id="about" data-screen-label="About">
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__media reveal">
+          <div class="about__media-placeholder" aria-hidden="true">
+            <span>images / about-portrait.jpg — 工房・職人</span>
+          </div>
+          <img src="images/about-portrait.jpg" alt="工房での石材加工の様子" loading="lazy" onerror="this.style.display='none'" />
+          <div class="about__media-frame"></div>
+        </div>
+
+        <div>
+          <p class="about__eyebrow reveal">03 — About Us</p>
+          <h2 class="about__title reveal">
+            オーダーメイドの<br />
+            お墓づくりに、<br />
+            力を入れています。
+          </h2>
+
+          <div class="about__body reveal">
+            <p>
+              長年の経験と石への深い知識を活かし、ご家族のご要望ひとつひとつに耳を傾けながら、
+              世界にひとつだけのお墓を心を込めてお作りしています。
+            </p>
+            <p>
+              石種の選定から、デザイン、文字の彫刻、施工、そしてその後のお手入れまで。
+              すべての工程を、職人がまごころを込めて担当いたします。
+            </p>
+          </div>
+
+          <ul class="about__values reveal">
+            <li>
+              <span class="k">01</span>
+              <span class="v mincho">まごころ<small>創業以来変わらない、ご家族への姿勢。</small></span>
+            </li>
+            <li>
+              <span class="k">02</span>
+              <span class="v mincho">確かな技術<small>石種の特性を活かす、職人の手仕事。</small></span>
+            </li>
+            <li>
+              <span class="k">03</span>
+              <span class="v mincho">地域に根ざす<small>杉並区を中心に、10以上の寺院と提携。</small></span>
+            </li>
+          </ul>
+
+          <a class="btn btn--dark reveal" href="#contact">
+            会社概要を見る <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== WORKS ============== -->
+  <section class="works" id="works" data-screen-label="Works">
+    <div class="container">
+      <header class="works__head">
+        <div>
+          <div class="section__num">— 04 / Works</div>
+          <h2 class="section__title">施工例</h2>
+        </div>
+        <a class="service__more" href="#contact">すべての施工例 <span class="arrow">→</span></a>
+      </header>
+    </div>
+
+    <div class="works__grid">
+      <a class="work" href="#contact" aria-label="施工例 01">
+        <div class="work__placeholder" aria-hidden="true"></div>
+        <img class="work__img" src="images/work-01.jpg" alt="施工例 01" loading="lazy" onerror="this.style.display='none'" />
+        <div class="work__caption"><span class="mincho">和型 / 久我山</span><span class="num">01</span></div>
+      </a>
+      <a class="work" href="#contact" aria-label="施工例 02">
+        <div class="work__placeholder" aria-hidden="true"></div>
+        <img class="work__img" src="images/work-02.jpg" alt="施工例 02" loading="lazy" onerror="this.style.display='none'" />
+        <div class="work__caption"><span class="mincho">洋型 / 杉並</span><span class="num">02</span></div>
+      </a>
+      <a class="work" href="#contact" aria-label="施工例 03">
+        <div class="work__placeholder" aria-hidden="true"></div>
+        <img class="work__img" src="images/work-03.jpg" alt="施工例 03" loading="lazy" onerror="this.style.display='none'" />
+        <div class="work__caption"><span class="mincho">デザイン / 練馬</span><span class="num">03</span></div>
+      </a>
+      <a class="work" href="#contact" aria-label="施工例 04">
+        <div class="work__placeholder" aria-hidden="true"></div>
+        <img class="work__img" src="images/work-04.jpg" alt="施工例 04" loading="lazy" onerror="this.style.display='none'" />
+        <div class="work__caption"><span class="mincho">リフォーム / 三鷹</span><span class="num">04</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============== CONTACT ============== -->
+  <section class="contact" id="contact" data-screen-label="Contact">
+    <div class="container">
+      <div class="contact__grid">
+        <div>
+          <p class="contact__eyebrow reveal">05 — Contact</p>
+          <h2 class="contact__title reveal">
+            お気軽に<br />
+            ご相談ください。
+          </h2>
+          <p class="contact__lead reveal">
+            お墓のこと、ご供養のこと。
+            どんな小さなことでも、まずはお電話で。
+            ご家族のお気持ちを丁寧にお伺いいたします。
+          </p>
+        </div>
+
+        <div class="reveal">
+          <div class="tel-block">
+            <div class="tel-block__label"><span class="dot"></span>Tel — フリーダイヤル</div>
+            <a class="tel-block__num" href="tel:0120-3333-845">0120-3333-845</a>
+            <p class="tel-block__hours">
+              <strong>営業時間</strong>　平日 8:00 — 17:00<br />
+              （毎月14・15日、土日祝を除く）
+            </p>
+          </div>
+
+          <dl class="contact__meta">
+            <dt>Address</dt>
+            <dd>〒168-0082<br />東京都杉並区久我山5-5-12 さざれえにし201</dd>
+            <dt>Fax</dt>
+            <dd>03-3333-8452</dd>
+            <dt>Email</dt>
+            <dd><a href="mailto:shojisekizai@gmail.com">shojisekizai@gmail.com</a></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============== FOOTER ============== -->
+<footer class="footer" data-screen-label="Footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <p class="footer__brand">庄司石材店</p>
+        <p class="footer__sub">Shoji Sekizaiten — Tokyo Suginami</p>
+        <address class="footer__address">
+          〒168-0082<br />
+          東京都杉並区久我山5-5-12 さざれえにし201<br />
+          Tel. 0120-3333-845 / Fax. 03-3333-8452
+        </address>
+      </div>
+
+      <div>
+        <p class="footer__heading">Services</p>
+        <ul class="footer__list">
+          <li><a href="#services">お墓 新規</a></li>
+          <li><a href="#services">クリーニング</a></li>
+          <li><a href="#services">地震対策・免震パット</a></li>
+          <li><a href="#services">リフォーム</a></li>
+          <li><a href="#services">追加彫刻</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer__heading">Information</p>
+        <ul class="footer__list">
+          <li><a href="#about">会社概要</a></li>
+          <li><a href="#works">施工例</a></li>
+          <li><a href="#contact">お問い合わせ</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2026 Shoji Sekizaiten. All rights reserved.</span>
+      <span>東京都杉並区久我山5-5-12</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  (function () {
+    var nav = document.getElementById('nav');
+    var btn = nav.querySelector('.nav__burger');
+    btn.addEventListener('click', function () {
+      var open = nav.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Close on link click (mobile)
+    nav.querySelectorAll('.nav__menu a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+
+  // Reveal-on-scroll (lightweight, IntersectionObserver)
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+<!-- v1.0.0 -->
+</body>
+</html>
