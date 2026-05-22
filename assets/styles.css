@@ -1109,3 +1109,88 @@
   .story-grid { grid-template-columns: 1fr; }
   .story-grid--alt > :first-child { order: 0; }
 }
+
+/* ---------- Kitchen menu grid (pizza.html) ---------- */
+.menu-section { background: var(--bg); }
+.menu-section .story__head { margin-bottom: clamp(40px, 5vw, 64px); }
+
+.menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.4vw, 36px);
+}
+.menu__item {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.menu__media {
+  aspect-ratio: 1 / 1;
+  background: #e8e5dd;
+  overflow: hidden;
+  position: relative;
+  border-bottom: 1px solid var(--rule);
+}
+.menu__media img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .8s cubic-bezier(.2,.7,.2,1);
+}
+.menu__item:hover .menu__media img { transform: scale(1.05); }
+.menu__body {
+  padding: 22px clamp(18px, 2vw, 26px) 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.menu__cat {
+  font-family: Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--stone);
+  text-transform: uppercase;
+}
+.menu__name {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  margin: 0;
+}
+.menu__desc {
+  font-size: 12px;
+  line-height: 1.9;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+}
+.menu__divider {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-top: clamp(28px, 3vw, 44px);
+  border-top: 1px solid var(--rule);
+}
+.menu__divider:first-child { padding-top: 0; border-top: 0; }
+.menu__divider-label {
+  font-family: Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--stone);
+  white-space: nowrap;
+}
+.menu__divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+@media (max-width: 1024px) {
+  .menu { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .menu { grid-template-columns: 1fr; }
+}
