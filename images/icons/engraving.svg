@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"
+     stroke="#1a1a1a" stroke-width="1.3" stroke-linejoin="miter">
+  <!-- 墓誌 -->
+  <path d="M12 8h26v38H12z"/>
+  <!-- 彫られた文字（縦書き） -->
+  <path d="M19 14v16M25 14v22M31 14v11" stroke-dasharray="1.6 3.4" opacity=".7"
+        stroke-linecap="round"/>
+  <!-- 台 -->
+  <path d="M8 46h34v5H8z"/>
+  <path d="M4 51h56" opacity=".4"/>
+  <!-- 鑿 -->
+  <path d="M46.5 38.5 58 27l3.2 3.2L49.7 41.7z"/>
+  <path d="m46.5 38.5-3.4 6.6 6.6-3.4" stroke-linejoin="round"/>
+</svg>

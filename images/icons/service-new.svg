@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none"
+     stroke="#1a1a1a" stroke-width="1.3" stroke-linejoin="miter">
+  <!-- 竿石 -->
+  <path d="M26 10h12v26H26z"/>
+  <!-- 上台 -->
+  <path d="M21.5 36h21v6h-21z"/>
+  <!-- 中台 -->
+  <path d="M16.5 42h31v6h-31z"/>
+  <!-- 芝台 -->
+  <path d="M11 48h42v6H11z"/>
+  <!-- 地面 -->
+  <path d="M5 54h54" opacity=".4"/>
+</svg>

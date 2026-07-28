@@ -1868,3 +1868,36 @@
 /* 見出しの句が、変なところで折り返さないようにする。
    （句のまとまりごとに <span class="nb"> で囲ってある） */
 .nb { white-space: nowrap; }
+
+/* ---------- サービスのアイコン表示 ----------
+   写真の代わりに線画を置くときの見た目。
+   写真が用意できたら、HTML側を img に戻すだけで切り替えられる。 */
+.service__media--icon,
+.engraving-cta__media--icon {
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 15px, rgba(26,26,26,0.03) 15px 16px),
+    linear-gradient(180deg, #efece5 0%, #e3dfd6 100%);
+}
+.service__icon,
+.engraving-cta__icon {
+  position: relative;
+  width: 46%;
+  max-width: 128px;
+  height: auto;
+  opacity: .82;
+  transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .4s ease;
+}
+.service:hover .service__icon,
+.engraving-cta__media--icon:hover .engraving-cta__icon {
+  transform: scale(1.05);
+  opacity: 1;
+}
+/* .engraving-cta__media img（object-fit: cover）に負けないよう指定を強める */
+.engraving-cta__media--icon .engraving-cta__icon {
+  width: 38%;
+  max-width: 116px;
+  height: auto;
+  object-fit: contain;
+}
