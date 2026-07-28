@@ -924,7 +924,7 @@
 .story__title {
   font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
   font-weight: 400;
-  font-size: clamp(24px, 3vw, 40px);
+  font-size: clamp(22px, 3vw, 40px);
   line-height: 1.5;
   letter-spacing: 0.08em;
   margin: 0;
@@ -1214,10 +1214,13 @@
 }
 .engraving-cta__grid {
   display: grid;
-  grid-template-columns: 1fr 1.7fr 1fr;
-  gap: clamp(24px, 3vw, 44px);
+  grid-template-columns: 1fr 2.1fr;
+  gap: clamp(18px, 2.2vw, 30px) clamp(28px, 4vw, 60px);
   align-items: center;
 }
+.engraving-cta__media   { grid-column: 1; grid-row: 1 / 3; }
+.engraving-cta__text    { grid-column: 2; grid-row: 1; }
+.engraving-cta__actions { grid-column: 2; grid-row: 2; }
 .engraving-cta__media {
   position: relative;
   aspect-ratio: 4 / 3;
@@ -1272,9 +1275,9 @@
 }
 .engraving-cta__actions {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 18px;
-  align-items: stretch;
+  align-items: center;
 }
 .engraving-cta__tel {
   display: flex;
@@ -1308,21 +1311,15 @@
   justify-content: space-between;
 }
 
-@media (max-width: 1100px) {
-  .engraving-cta__grid {
-    grid-template-columns: 0.9fr 1.4fr;
-    gap: clamp(24px, 4vw, 40px);
-  }
-  .engraving-cta__actions { grid-column: 1 / -1; }
-}
-
 @media (max-width: 820px) {
   .engraving-cta__grid {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 26px;
   }
-  .engraving-cta__actions { grid-column: auto; }
-  .engraving-cta__media { aspect-ratio: 16 / 9; }
+  .engraving-cta__media   { grid-column: auto; grid-row: auto; aspect-ratio: 16 / 9; }
+  .engraving-cta__text    { grid-column: auto; grid-row: auto; }
+  .engraving-cta__actions { grid-column: auto; grid-row: auto; }
+  .engraving-cta__btn     { width: 100%; justify-content: center; }
 }
 
 /* ============================================================
@@ -1863,3 +1860,7 @@
   .form__row { grid-template-columns: 1fr; }
   .form__send { width: 100%; justify-content: center; padding-inline: 20px; }
 }
+
+/* 見出しの句が、変なところで折り返さないようにする。
+   （句のまとまりごとに <span class="nb"> で囲ってある） */
+.nb { white-space: nowrap; }
