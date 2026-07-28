@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="7.03 8.35 45.52 45.3" fill="none"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8.03 10.35 52.12 45.3" fill="none"
      stroke="#1a1a1a" stroke-width="1.3" stroke-linejoin="miter">
-  <path d="M22.52 11h6.96v18.26h-6.96z"/>
-  <path d="M19.91 29.26h12.17v8.7h-12.17z"/>
-  <path d="M17.3 37.96h17.39v8.7h-17.39z"/>
-  <path d="M13.68 46.65h24.64v4.35h-24.64z"/>
-  <path d="M9.68 51L42.32 51" opacity=".4"/>
-  <path d="M45 14c0 0-4.4 5.6-4.4 8.3a4.4 4.4 0 0 0 8.8 0C49.4 19.6 45 14 45 14z" stroke-linejoin="round"/>
-  <path d="M40.5 30c3 2 6.4 2 9.4 0" opacity=".55"/>
-  <path d="M41.8 34.4c2.4 1.7 5 1.7 7.4 0" opacity=".4"/>
+  <path d="M23.52 13h6.96v18.26h-6.96z"/>
+  <path d="M20.91 31.26h12.17v8.7h-12.17z"/>
+  <path d="M18.3 39.96h17.39v8.7h-17.39z"/>
+  <path d="M14.68 48.65h24.64v4.35h-24.64z"/>
+  <path d="M10.68 53L43.32 53" opacity=".4"/>
+  <path d="M46 13.6Q46 20 52.4 20Q46 20 46 26.4Q46 20 39.6 20Q46 20 46 13.6z" stroke-linejoin="round"/>
+  <path d="M53.5 26Q53.5 30 57.5 30Q53.5 30 53.5 34Q53.5 30 49.5 30Q53.5 30 53.5 26z" stroke-linejoin="round" opacity=".75"/>
+  <path d="M43.5 29.7Q43.5 32.5 46.3 32.5Q43.5 32.5 43.5 35.3Q43.5 32.5 40.7 32.5Q43.5 32.5 43.5 29.7z" stroke-linejoin="round" opacity=".55"/>
 </svg>

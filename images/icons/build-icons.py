@@ -47,6 +47,35 @@ class Icon:
         self.body.append('  <path d="%s"%s/>' % (d, extra))
         self._grow(*bbox)
 
+    def text(self, x, y, s, size=6.2, spacing=1.1, anchor='start', opacity='.85'):
+        self.body.append(
+            '  <text x="%s" y="%s" font-family="Georgia, \'Times New Roman\', serif" '
+            'font-size="%s" letter-spacing="%s" text-anchor="%s" '
+            'fill="#1a1a1a" fill-opacity="%s" stroke="none">%s</text>'
+            % (r(x), r(y), r(size), r(spacing), anchor, opacity, s))
+        w = len(s) * (size * .62 + spacing)
+        x0 = x if anchor == 'start' else (x - w / 2 if anchor == 'middle' else x - w)
+        self._grow(x0, y - size, x0 + w, y + size * .25)
+
+    def sparkle(self, cx, cy, rad, opacity=None):
+        """四方に伸びる、光のしるし。"""
+        d = ('M%s %sQ%s %s %s %sQ%s %s %s %sQ%s %s %s %sQ%s %s %s %sz'
+             % (r(cx), r(cy - rad), r(cx), r(cy), r(cx + rad), r(cy),
+                r(cx), r(cy), r(cx), r(cy + rad), r(cx), r(cy),
+                r(cx - rad), r(cy), r(cx), r(cy), r(cx), r(cy - rad)))
+        a = ' opacity="%s"' % opacity if opacity else ''
+        self.body.append('  <path d="%s" stroke-linejoin="round"%s/>' % (d, a))
+        self._grow(cx - rad, cy - rad, cx + rad, cy + rad)
+
+    def tilted(self, x, y, w, h, deg, opacity=None):
+        """下辺の角を軸にして傾けた石。地震で竿石がずれた様子に使う。"""
+        px, py = (x if deg > 0 else x + w), y + h
+        a = ' opacity="%s"' % opacity if opacity else ''
+        self.body.append(
+            '  <g transform="rotate(%s %s %s)"%s><path d="M%s %sh%sv%sh-%sz"/></g>'
+            % (r(deg), r(px), r(py), a, r(x), r(y), r(w), r(h), r(w)))
+        self._grow(x - h * abs(deg) / 45.0, y, x + w + h * abs(deg) / 45.0, y + h)
+
     def stone(self, cx, top, height):
         """比率どおりに各段を積む。戻り値は (各段, 下端, 最大幅)。"""
         unit = height / float(sum(TAKASA))
@@ -75,74 +104,77 @@ def r(v):
 
 
 # ---------------------------------------------------------------- お墓 新規
+# 墓石に「New」の文字を添える
 ic = Icon()
-tiers, bottom, base_w = ic.stone(cx=32, top=8, height=46)
+tiers, bottom, base_w = ic.stone(cx=30, top=12, height=44)
 for t in tiers:
     ic.rect(*t)
-ic.line(32 - base_w / 2 - 5, bottom, 32 + base_w / 2 + 5, bottom, opacity='.4')
+ic.line(30 - base_w / 2 - 5, bottom, 30 + base_w / 2 + 5, bottom, opacity='.4')
+ic.text(30 + base_w / 2 + 1.5, 26, 'NEW', size=7, spacing=1.3)
 ic.save('service-new.svg')
 
 # ---------------------------------------------------------------- クリーニング
+# 洗い上がって光っている様子。きらめきを三つ
 ic = Icon()
-tiers, bottom, base_w = ic.stone(cx=26, top=11, height=40)
+tiers, bottom, base_w = ic.stone(cx=27, top=13, height=40)
 for t in tiers:
     ic.rect(*t)
-ic.line(26 - base_w / 2 - 4, bottom, 26 + base_w / 2 + 4, bottom, opacity='.4')
-# しずく
-ic.raw('M45 14c0 0-4.4 5.6-4.4 8.3a4.4 4.4 0 0 0 8.8 0C49.4 19.6 45 14 45 14z',
-       (40.6, 14, 49.4, 26.7), ' stroke-linejoin="round"')
-# 洗い流れ
-ic.raw('M40.5 30c3 2 6.4 2 9.4 0', (40.5, 30, 49.9, 31.6), ' opacity=".55"')
-ic.raw('M41.8 34.4c2.4 1.7 5 1.7 7.4 0', (41.8, 34.4, 49.2, 35.7), ' opacity=".4"')
+ic.line(27 - base_w / 2 - 4, bottom, 27 + base_w / 2 + 4, bottom, opacity='.4')
+ic.sparkle(46, 20, 6.4)
+ic.sparkle(53.5, 30, 4.0, opacity='.75')
+ic.sparkle(43.5, 32.5, 2.8, opacity='.55')
 ic.save('service-cleaning.svg')
 
 # ---------------------------------------------------------------- 地震対策
+# 竿石だけが傾いた様子。あいだに免震パットを挟む
 ic = Icon()
 unit = 40 / float(sum(TAKASA))
 pad_h = 2.4                       # 実際はごく薄いが、図として見えるよう厚めに描く
-top = 10
-tiers = []
+top = 12
 y = top
+tiers = []
+pad = None
 for i, (hr, wr) in enumerate(zip(TAKASA, HABA)):
     h, w = hr * unit, wr * unit
     tiers.append((32 - w / 2, y, w, h))
     y += h
     if i == 0:                    # 竿石の直下に免震パット
         pw = HABA[1] * unit * .96
-        ic_pad = (32 - pw / 2, y, pw, pad_h)
+        pad = (32 - pw / 2, y, pw, pad_h)
         y += pad_h
-for t in tiers:
-    ic.rect(*t)
-ic.rect(*ic_pad, fill='.82')
+for i, t in enumerate(tiers):
+    if i == 0:
+        ic.tilted(*t, deg=6)      # 竿石だけ傾ける
+    else:
+        ic.rect(*t)
+ic.rect(*pad, fill='.82')
 base_w = HABA[-1] * unit
 ic.line(32 - base_w / 2 - 5, y, 32 + base_w / 2 + 5, y, opacity='.4')
-# 横揺れを受け流す
-ay = ic_pad[1] + pad_h / 2
-for sx, d in ((32 - base_w / 2 - 3, -1), (32 + base_w / 2 + 3, 1)):
-    ic.raw('M%s %sh%s' % (r(sx), r(ay), r(6 * d)), (min(sx, sx + 6 * d), ay - 3, max(sx, sx + 6 * d), ay + 3),
-           ' opacity=".7" stroke-linecap="round"')
-    tip = sx + 6 * d
-    ic.raw('M%s %sl%s 2.6l%s 2.6' % (r(tip - 2.6 * d), r(ay - 2.6), r(2.6 * d), r(-2.6 * d)),
-           (tip - 3, ay - 3, tip + 3, ay + 3),
-           ' opacity=".7" stroke-linecap="round" stroke-linejoin="round"')
 ic.save('service-quake.svg')
 
 # ---------------------------------------------------------------- リフォーム
+# 古い石塔から新しい石塔へ。あいだに矢印
 ic = Icon()
-tiers, bottom, base_w = ic.stone(cx=24, top=13, height=36)
-for t in tiers:
-    ic.rect(*t)
-# 差し替える花立の中筒
-cyl_w, cyl_h = 8, 17
-cx2 = 47
-ic.rect(cx2 - cyl_w / 2, bottom - cyl_h, cyl_w, cyl_h)
-ic.line(cx2 - cyl_w / 2, bottom - cyl_h + 3, cx2 + cyl_w / 2, bottom - cyl_h + 3, opacity='.55')
-ic.line(24 - base_w / 2 - 4, bottom, cx2 + cyl_w / 2 + 4, bottom, opacity='.4')
-# 引き抜く矢印
-ic.raw('M%s %sV%s' % (r(cx2), r(bottom - cyl_h - 4), r(bottom - cyl_h - 12)),
-       (cx2 - 3, bottom - cyl_h - 12, cx2 + 3, bottom - cyl_h - 4), ' stroke-linecap="round"')
-ic.raw('m%s %s %s -3 %s 3' % (r(cx2 - 3), r(bottom - cyl_h - 9), 3, 3),
-       (cx2 - 3, bottom - cyl_h - 12, cx2 + 3, bottom - cyl_h - 9),
+GY = 46                            # 共通の地面
+
+def small_stone(cx, height, old=False):
+    unit = height / float(sum(TAKASA))
+    y = GY - height
+    for i, (hr, wr) in enumerate(zip(TAKASA, HABA)):
+        h, w = hr * unit, wr * unit
+        ic.body.append('  <path d="M%s %sh%sv%sh-%sz"%s/>'
+                       % (r(cx - w / 2), r(y), r(w), r(h), r(w),
+                          ' opacity=".45"' if old else ''))
+        ic._grow(cx - w / 2, y, cx + w / 2, y + h)
+        y += h
+    return HABA[-1] * unit
+
+w_old = small_stone(14, 30, old=True)
+w_new = small_stone(50, 34)
+ic.line(14 - w_old / 2 - 3, GY, 50 + w_new / 2 + 3, GY, opacity='.4')
+# 変更を表す矢印
+ic.raw('M28 30h7', (28, 27, 35, 33), ' stroke-linecap="round"')
+ic.raw('m32.4 26.6 3.8 3.4-3.8 3.4', (32.4, 26.6, 36.2, 33.4),
        ' stroke-linecap="round" stroke-linejoin="round"')
 ic.save('service-reform.svg')
 

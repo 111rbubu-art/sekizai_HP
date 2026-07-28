@@ -1,14 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="5.03 7.35 53.94 47.7" fill="none"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="12.03 9.35 39.94 47.7" fill="none"
      stroke="#1a1a1a" stroke-width="1.3" stroke-linejoin="miter">
-  <path d="M28.52 10h6.96v18.26h-6.96z"/>
-  <path d="M25.91 30.66h12.17v8.7h-12.17z"/>
-  <path d="M23.3 39.36h17.39v8.7h-17.39z"/>
-  <path d="M19.68 48.05h24.64v4.35h-24.64z"/>
-  <path d="M26.16 28.26h11.69v2.4h-11.69z" fill="#1a1a1a" fill-opacity=".82" stroke="none"/>
-  <path d="M26.16 28.26h11.69v2.4h-11.69z"/>
-  <path d="M14.68 52.4L49.32 52.4" opacity=".4"/>
-  <path d="M16.68 29.46h-6" opacity=".7" stroke-linecap="round"/>
-  <path d="M13.28 26.86l-2.6 2.6l2.6 2.6" opacity=".7" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M47.32 29.46h6" opacity=".7" stroke-linecap="round"/>
-  <path d="M50.72 26.86l2.6 2.6l-2.6 2.6" opacity=".7" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="rotate(6 28.52 30.26)"><path d="M28.52 12h6.96v18.26h-6.96z"/></g>
+  <path d="M25.91 32.66h12.17v8.7h-12.17z"/>
+  <path d="M23.3 41.36h17.39v8.7h-17.39z"/>
+  <path d="M19.68 50.05h24.64v4.35h-24.64z"/>
+  <path d="M26.16 30.26h11.69v2.4h-11.69z" fill="#1a1a1a" fill-opacity=".82" stroke="none"/>
+  <path d="M26.16 30.26h11.69v2.4h-11.69z"/>
+  <path d="M14.68 54.4L49.32 54.4" opacity=".4"/>
 </svg>
