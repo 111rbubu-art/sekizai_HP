@@ -1602,3 +1602,264 @@
   .spec > div { grid-template-columns: 1fr; gap: 6px; padding: 18px 0; }
   .spec dt { font-size: 12px; letter-spacing: 0.18em; color: var(--stone); }
 }
+
+/* ============================================================
+   お申し込みフォーム（追加彫刻）
+   ご高齢の方が使われることを前提に、文字とタップ領域を大きめに。
+   ============================================================ */
+.form { max-width: 780px; }
+
+.form__group {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.form__group + .form__group {
+  margin-top: clamp(44px, 5vw, 68px);
+  padding-top: clamp(40px, 4.5vw, 60px);
+  border-top: 1px solid var(--rule);
+}
+.form__legend {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 0 18px 0 0;   /* 区切り線を見出しのぶんだけ空ける */
+  margin-bottom: 10px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  font-size: clamp(19px, 2.2vw, 23px);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.form__legend .n {
+  font-family: Georgia, serif;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--stone);
+}
+.form__lead {
+  margin: 0 0 clamp(24px, 3vw, 34px);
+  font-size: 14px;
+  line-height: 2;
+  color: rgba(26,26,26,0.66);
+}
+
+.form__field { margin-bottom: 24px; }
+.form__field:last-child { margin-bottom: 0; }
+
+.form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 clamp(16px, 2.5vw, 28px);
+}
+
+.form__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+.form__label .req,
+.form__label .opt {
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  padding: 3px 8px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.form__label .req { background: var(--ink); color: var(--bg); }
+.form__label .opt { border: 1px solid var(--rule); color: var(--stone); }
+
+.form__hint {
+  margin: 7px 0 0;
+  font-size: 12.5px;
+  line-height: 1.85;
+  color: rgba(26,26,26,0.55);
+  letter-spacing: 0.04em;
+}
+
+.form input[type="text"],
+.form input[type="tel"],
+.form input[type="email"],
+.form input[type="date"],
+.form textarea {
+  font: inherit;
+  font-size: 16px;               /* iOSで拡大されないように16px以上 */
+  width: 100%;
+  padding: 14px 15px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .25s ease;
+}
+.form textarea { line-height: 1.9; resize: vertical; min-height: 130px; }
+
+.form input:hover,
+.form textarea:hover { border-color: rgba(26,26,26,0.32); }
+
+.form input:focus,
+.form textarea:focus {
+  border-color: var(--ink);
+  outline: 1px solid var(--ink);
+  outline-offset: -2px;
+}
+
+.form input::placeholder,
+.form textarea::placeholder { color: rgba(26,26,26,0.3); }
+
+/* 迷惑投稿よけ。画面にもスクリーンリーダーにも出さない */
+.form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px; height: 1px;
+  overflow: hidden;
+}
+
+/* --- 写真の添付 --- */
+.form__drop {
+  border: 1px dashed rgba(26,26,26,0.32);
+  background: var(--bg-soft);
+  padding: clamp(30px, 4vw, 46px) clamp(20px, 3vw, 32px);
+  text-align: center;
+  transition: border-color .25s ease, background .25s ease;
+}
+.form__drop.is-over {
+  border-color: var(--ink);
+  background: #fff;
+}
+.form__drop-title {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  font-size: 17px;
+  letter-spacing: 0.08em;
+  margin: 0 0 8px;
+}
+.form__drop-sub {
+  margin: 0 0 20px;
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: rgba(26,26,26,0.55);
+}
+.form__pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 26px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: background .3s ease, color .3s ease;
+}
+.form__pick:hover { background: var(--ink); color: var(--bg); }
+.form__pick:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.form__thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+.form__thumb {
+  position: relative;
+  aspect-ratio: 1;
+  background: #e8e5dd;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.form__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.form__thumb-name {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 5px 7px;
+  background: rgba(26,26,26,0.72);
+  color: #f7f6f3;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.form__thumb-del {
+  position: absolute; top: 6px; right: 6px;
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border: 0;
+  background: rgba(26,26,26,0.78);
+  color: #f7f6f3;
+  font-size: 15px;
+  line-height: 1;
+  transition: background .2s ease;
+}
+.form__thumb-del:hover { background: #1a1a1a; }
+.form__thumb-del:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* --- 送信 --- */
+.form__submit {
+  margin-top: clamp(40px, 5vw, 64px);
+  padding-top: clamp(32px, 4vw, 44px);
+  border-top: 1px solid var(--rule);
+}
+.form__send {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 19px 40px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  font-size: 17px;
+  letter-spacing: 0.16em;
+  transition: background .3s ease, color .3s ease;
+}
+.form__send:hover { background: transparent; color: var(--ink); }
+.form__send .arrow { transition: transform .35s ease; }
+.form__send:hover .arrow { transform: translateX(6px); }
+.form__send:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.form__submit-note {
+  margin: 20px 0 0;
+  font-size: 12.5px;
+  line-height: 1.95;
+  color: rgba(26,26,26,0.55);
+}
+
+/* --- 入力エラー・送信後の表示 --- */
+.form__alert {
+  margin-bottom: clamp(28px, 3vw, 40px);
+  padding: 20px 24px;
+  border: 1px solid var(--ink);
+  background: var(--bg-soft);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.form__alert ul { margin: 10px 0 0; padding-left: 1.2em; }
+.form__alert li { margin-bottom: 4px; }
+.form__alert[hidden] { display: none; }
+
+.form-done {
+  border: 1px solid var(--ink);
+  padding: clamp(40px, 5vw, 68px) clamp(24px, 4vw, 52px);
+  text-align: center;
+}
+.form-done__title {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  font-size: clamp(22px, 2.8vw, 30px);
+  letter-spacing: 0.1em;
+  margin: 0 0 20px;
+}
+.form-done__body { margin: 0; font-size: 14.5px; line-height: 2; color: rgba(26,26,26,0.7); }
+.form-done[hidden] { display: none; }
+
+@media (max-width: 700px) {
+  .form__row { grid-template-columns: 1fr; }
+  .form__send { width: 100%; justify-content: center; padding-inline: 20px; }
+}

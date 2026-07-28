@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>追加彫刻のお申し込み — 庄司石材店</title>
+<meta name="description" content="お墓への追加彫刻を、このページから直接お申し込みいただけます。彫刻する内容の入力と、お位牌や資料の写真の添付ができます。" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#1a1a1a" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231a1a1a'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23f7f6f3' text-anchor='middle'%3E庄%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+
+<!--
+  ============================================================
+  【公開前に必ずお読みください】
+
+  このページは「見た目の確認用」です。まだ送信先がありません。
+  送信ボタンを押しても、入力内容はどこにも送られません。
+
+  本番で使うには、さくらに受信スクリプト（uketsuke/inquiry.php）を
+  用意したうえで、次の2つを行ってください。
+
+    1. <form> に action="/uketsuke/inquiry.php" method="post"
+       enctype="multipart/form-data" を設定する
+    2. ページ末尾のスクリプトの DEMO を false にする
+
+  それまでは、このページをナビゲーションから
+  リンクしないでください（noindex 済み）。
+  ============================================================
+-->
+
+<a class="skip" href="#main">本文へスキップ</a>
+
+<!-- ============== NAV ============== -->
+<header class="nav" id="nav" data-screen-label="Navigation">
+  <div class="container nav__inner">
+    <a href="index.html" class="brand" aria-label="庄司石材店 ホーム">
+      <span class="brand__mark mincho">庄司石材店</span>
+      <span class="brand__en">Shoji Sekizaiten</span>
+    </a>
+
+    <nav aria-label="主要ナビゲーション">
+      <ul class="nav__menu">
+        <li><a href="engraving.html" aria-current="page">追加彫刻</a></li>
+        <li><a href="boseki.html">お墓 新規</a></li>
+        <li><a href="cleaning.html">クリーニング</a></li>
+        <li><a href="jishin.html">地震対策</a></li>
+        <li><a href="reform.html">リフォーム</a></li>
+        <li><a href="index.html#projects">プロジェクト</a></li>
+        <li><a href="company.html">会社概要</a></li>
+      </ul>
+    </nav>
+
+    <a class="nav__tel" href="tel:0120-333-845">
+      <small>tel.</small>
+      0120&hairsp;-&hairsp;333&hairsp;-&hairsp;845
+    </a>
+
+    <button class="nav__burger" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============== PAGE HERO ============== -->
+  <section class="page-hero" data-screen-label="Page Hero">
+    <div class="container">
+      <div class="page-hero__inner">
+        <div>
+          <div class="page-hero__breadcrumb">
+            <a href="index.html">Top</a> &nbsp;/&nbsp;
+            <a href="engraving.html">Engraving</a> &nbsp;/&nbsp; Form
+          </div>
+          <h1 class="page-hero__title mincho">追加彫刻の<br />お申し込み</h1>
+        </div>
+        <p class="page-hero__lead">このページから、<br />直接お申し込みいただけます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 入力フォーム ============== -->
+  <section class="container story" id="form">
+    <header class="story__head">
+      <div class="story__num">— Application</div>
+      <h2 class="story__title mincho">お申し込み内容を<br />ご記入ください。</h2>
+    </header>
+
+    <div class="story__body">
+      <p><strong>お分かりになる範囲で結構です。</strong>空欄のままでも受け付けます。不足している内容は、こちらからお電話でおうかがいいたします。</p>
+      <p>戒名は旧字体や変体仮名が使われていることが多く、文字で正確にお伝えいただくのが難しい場合があります。<strong>お位牌やお寺からいただいた資料を写真で添付していただくのが、いちばん確実です。</strong></p>
+    </div>
+
+    <!--
+      本番では <form> に以下を設定してください:
+        action="/uketsuke/inquiry.php" method="post" enctype="multipart/form-data"
+    -->
+    <form class="form" id="inquiry-form" novalidate>
+
+      <div class="form__alert" id="form-alert" role="alert" hidden>
+        <strong>ご入力の確認をお願いします。</strong>
+        <ul id="form-alert-list"></ul>
+      </div>
+
+      <!-- 迷惑投稿よけ。人には見えない項目 -->
+      <div class="form__hp" aria-hidden="true">
+        <label>この欄は入力しないでください
+          <input type="text" name="_hp" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      <!-- 01 ご依頼者さま -->
+      <fieldset class="form__group">
+        <legend class="form__legend"><span class="n">01</span>ご依頼者さまについて</legend>
+        <p class="form__lead">ご連絡と、確認資料の郵送に使わせていただきます。</p>
+
+        <div class="form__row">
+          <div class="form__field">
+            <label class="form__label" for="f-name">お名前 <span class="req">必須</span></label>
+            <input type="text" id="f-name" name="name" autocomplete="name" placeholder="庄司 太郎" required />
+          </div>
+          <div class="form__field">
+            <label class="form__label" for="f-kana">ふりがな <span class="opt">任意</span></label>
+            <input type="text" id="f-kana" name="kana" placeholder="しょうじ たろう" />
+          </div>
+        </div>
+
+        <div class="form__row">
+          <div class="form__field">
+            <label class="form__label" for="f-tel">お電話番号 <span class="req">必須</span></label>
+            <input type="tel" id="f-tel" name="tel" autocomplete="tel" placeholder="03-1234-5678" required />
+            <p class="form__hint">日中つながりやすい番号をご記入ください。</p>
+          </div>
+          <div class="form__field">
+            <label class="form__label" for="f-mail">メールアドレス <span class="opt">任意</span></label>
+            <input type="email" id="f-mail" name="email" autocomplete="email" placeholder="example@example.com" />
+          </div>
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="f-addr">ご住所 <span class="opt">任意</span></label>
+          <input type="text" id="f-addr" name="address" autocomplete="street-address" placeholder="東京都杉並区久我山5-5-12" />
+          <p class="form__hint">彫刻内容の確認資料をお送りする場合に使います。</p>
+        </div>
+      </fieldset>
+
+      <!-- 02 お墓について -->
+      <fieldset class="form__group">
+        <legend class="form__legend"><span class="n">02</span>お墓について</legend>
+        <p class="form__lead">お墓のある場所をお知らせください。お寺や霊園によっては、ご依頼をお受けできない場合があります。</p>
+
+        <div class="form__field">
+          <label class="form__label" for="f-place">お寺・霊園の名称 <span class="req">必須</span></label>
+          <input type="text" id="f-place" name="place" placeholder="〇〇寺／〇〇霊園" required />
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="f-place-addr">お寺・霊園の所在地 <span class="opt">任意</span></label>
+          <input type="text" id="f-place-addr" name="placeAddress" placeholder="東京都杉並区久我山" />
+          <p class="form__hint">市区町村までで結構です。</p>
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="f-family">お墓に刻まれている家名 <span class="opt">任意</span></label>
+          <input type="text" id="f-family" name="familyName" placeholder="庄司家" />
+        </div>
+      </fieldset>
+
+      <!-- 03 彫刻する内容 -->
+      <fieldset class="form__group">
+        <legend class="form__legend"><span class="n">03</span>彫刻する内容</legend>
+        <p class="form__lead">お分かりになる範囲でご記入ください。文字に迷われる場合は、次の項目で写真を添付していただければ結構です。</p>
+
+        <div class="form__row">
+          <div class="form__field">
+            <label class="form__label" for="f-kaimyo">戒名（法名） <span class="opt">任意</span></label>
+            <input type="text" id="f-kaimyo" name="kaimyo" />
+          </div>
+          <div class="form__field">
+            <label class="form__label" for="f-zokumyo">俗名 <span class="opt">任意</span></label>
+            <input type="text" id="f-zokumyo" name="zokumyo" placeholder="生前のお名前" />
+          </div>
+        </div>
+
+        <div class="form__row">
+          <div class="form__field">
+            <label class="form__label" for="f-meinichi">命日 <span class="opt">任意</span></label>
+            <input type="text" id="f-meinichi" name="meinichi" placeholder="令和7年3月15日" />
+          </div>
+          <div class="form__field">
+            <label class="form__label" for="f-age">歿年齢 <span class="opt">任意</span></label>
+            <input type="text" id="f-age" name="age" placeholder="享年85" />
+          </div>
+        </div>
+
+        <div class="form__field">
+          <label class="form__label" for="f-nokotsu">ご納骨の予定日 <span class="opt">任意</span></label>
+          <input type="text" id="f-nokotsu" name="nokotsuDate" placeholder="令和7年4月20日／未定" />
+          <p class="form__hint">日取りが決まっている場合は必ずお知らせください。彫刻には通常2〜3週間いただいております。</p>
+        </div>
+      </fieldset>
+
+      <!-- 04 写真の添付 -->
+      <fieldset class="form__group">
+        <legend class="form__legend"><span class="n">04</span>写真の添付</legend>
+        <p class="form__lead">
+          お位牌、過去帳、お寺からいただいた資料などを撮影して添付してください。
+          文字を正確にお伝えいただく、いちばん確実な方法です。お墓全体の写真もあると助かります。
+        </p>
+
+        <div class="form__drop" id="drop">
+          <p class="form__drop-title mincho">写真を選ぶ</p>
+          <p class="form__drop-sub">
+            スマートフォンなら、その場で撮影したものをそのまま選べます。<br />
+            何枚でも添付いただけます。
+          </p>
+          <button type="button" class="form__pick" id="pick">
+            写真を選択 <span class="arrow">→</span>
+          </button>
+          <input type="file" id="f-photos" name="photos[]" accept="image/*,.pdf,.heic,.heif" multiple hidden />
+        </div>
+
+        <div class="form__thumbs" id="thumbs"></div>
+      </fieldset>
+
+      <!-- 05 その他 -->
+      <fieldset class="form__group">
+        <legend class="form__legend"><span class="n">05</span>ご質問・ご要望</legend>
+        <p class="form__lead">お急ぎのご事情、ご不明な点など、何でもご記入ください。</p>
+
+        <div class="form__field">
+          <label class="form__label" for="f-note">ご自由にご記入ください <span class="opt">任意</span></label>
+          <textarea id="f-note" name="note" rows="6"></textarea>
+        </div>
+      </fieldset>
+
+      <!-- 送信 -->
+      <div class="form__submit">
+        <button type="submit" class="form__send">
+          この内容で申し込む <span class="arrow">→</span>
+        </button>
+        <p class="form__submit-note">
+          お送りいただいた内容は、庄司石材店が追加彫刻のご依頼への対応にのみ使用します。<br />
+          内容を確認のうえ、担当者からお電話でご連絡いたします。<br />
+          入力がむずかしい場合は、お電話（<a href="tel:0120-333-845">0120-333-845</a>）でも承っております。
+        </p>
+      </div>
+
+    </form>
+
+    <!-- 送信後に表示する -->
+    <div class="form-done" id="form-done" hidden>
+      <p class="form-done__title mincho">お申し込みを承りました。</p>
+      <p class="form-done__body">
+        内容を確認のうえ、庄司石材店より折り返しご連絡いたします。<br />
+        お急ぎの場合は、お電話（<a href="tel:0120-333-845">0120-333-845</a>）でもご連絡ください。<br />
+        受付時間：8時〜17時（毎月14・15日、土・日曜日を除く）
+      </p>
+    </div>
+  </section>
+
+  <!-- ============== CTA ============== -->
+  <section class="page-foot reveal">
+    <div class="container">
+      <p class="page-foot__lead mincho">お電話でも<br />承っております。</p>
+      <p class="page-foot__sub">受付：8時〜17時（毎月14・15日、土・日曜日を除く）</p>
+      <a class="btn" href="tel:0120-333-845">
+        0120-333-845 に電話する <span class="arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============== FOOTER ============== -->
+<footer class="footer" data-screen-label="Footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <p class="footer__brand">庄司石材店</p>
+        <p class="footer__sub">Shoji Sekizaiten — Tokyo Suginami</p>
+        <address class="footer__address">
+          〒168-0082<br />
+          東京都杉並区久我山5-5-12 さざれえにし201<br />
+          Tel. 0120-333-845 / Fax. 03-3333-8452
+        </address>
+      </div>
+
+      <div>
+        <p class="footer__heading">Services</p>
+        <ul class="footer__list">
+          <li><a href="engraving.html">追加彫刻</a></li>
+          <li><a href="boseki.html">お墓 新規</a></li>
+          <li><a href="cleaning.html">クリーニング</a></li>
+          <li><a href="jishin.html">地震対策・免震パット</a></li>
+          <li><a href="reform.html">リフォーム</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer__heading">Information</p>
+        <ul class="footer__list">
+          <li><a href="company.html">会社概要</a></li>
+          <li><a href="index.html#projects">プロジェクト</a></li>
+          <li><a href="index.html#contact">お問い合わせ</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>© 2026 Shoji Sekizaiten. All rights reserved.</span>
+      <span>東京都杉並区久我山5-5-12</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ハンバーガー（他ページと同じ） */
+  (function () {
+    var nav = document.getElementById('nav');
+    var btn = nav.querySelector('.nav__burger');
+    btn.addEventListener('click', function () {
+      var open = nav.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.querySelectorAll('.nav__menu a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        nav.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  })();
+
+  /* 写真の選択とプレビュー */
+  (function () {
+    var DEMO = true;   // ← 受信スクリプトを用意したら false にする
+
+    var form   = document.getElementById('inquiry-form');
+    var input  = document.getElementById('f-photos');
+    var pick   = document.getElementById('pick');
+    var drop   = document.getElementById('drop');
+    var thumbs = document.getElementById('thumbs');
+    var alertBox  = document.getElementById('form-alert');
+    var alertList = document.getElementById('form-alert-list');
+    var done   = document.getElementById('form-done');
+
+    var files = [];   // 選ばれた写真をこちらで持ち、削除できるようにする
+
+    function isImage(f) { return /^image\//.test(f.type); }
+
+    function render() {
+      thumbs.innerHTML = '';
+      files.forEach(function (f, i) {
+        var cell = document.createElement('div');
+        cell.className = 'form__thumb';
+
+        if (isImage(f)) {
+          var img = document.createElement('img');
+          img.alt = f.name;
+          img.src = URL.createObjectURL(f);
+          img.onload = function () { URL.revokeObjectURL(img.src); };
+          cell.appendChild(img);
+        }
+
+        var name = document.createElement('span');
+        name.className = 'form__thumb-name';
+        name.textContent = f.name;
+        cell.appendChild(name);
+
+        var del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'form__thumb-del';
+        del.setAttribute('aria-label', f.name + ' を取り消す');
+        del.textContent = '×';
+        del.addEventListener('click', function () {
+          files.splice(i, 1);
+          sync();
+        });
+        cell.appendChild(del);
+
+        thumbs.appendChild(cell);
+      });
+    }
+
+    /* files 配列を <input type="file"> に書き戻す（送信されるのはこちら） */
+    function sync() {
+      var dt = new DataTransfer();
+      files.forEach(function (f) { dt.items.add(f); });
+      input.files = dt.files;
+      render();
+    }
+
+    function add(list) {
+      Array.prototype.forEach.call(list, function (f) {
+        var dup = files.some(function (g) {
+          return g.name === f.name && g.size === f.size;
+        });
+        if (!dup) files.push(f);
+      });
+      sync();
+    }
+
+    pick.addEventListener('click', function () { input.click(); });
+    input.addEventListener('change', function () { add(input.files); });
+
+    ['dragenter', 'dragover'].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) {
+        e.preventDefault();
+        drop.classList.add('is-over');
+      });
+    });
+    ['dragleave', 'drop'].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) {
+        e.preventDefault();
+        drop.classList.remove('is-over');
+      });
+    });
+    drop.addEventListener('drop', function (e) {
+      if (e.dataTransfer && e.dataTransfer.files) add(e.dataTransfer.files);
+    });
+
+    /* 送信前の確認 */
+    form.addEventListener('submit', function (e) {
+      var problems = [];
+      [['f-name', 'お名前'], ['f-tel', 'お電話番号'], ['f-place', 'お寺・霊園の名称']]
+        .forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          if (!el.value.trim()) problems.push(pair[1] + 'をご記入ください。');
+        });
+
+      var mail = document.getElementById('f-mail');
+      if (mail.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail.value.trim())) {
+        problems.push('メールアドレスの形式をご確認ください。');
+      }
+
+      if (problems.length) {
+        e.preventDefault();
+        alertList.innerHTML = '';
+        problems.forEach(function (p) {
+          var li = document.createElement('li');
+          li.textContent = p;
+          alertList.appendChild(li);
+        });
+        alertBox.hidden = false;
+        alertBox.scrollIntoView({ block: 'center' });
+        return;
+      }
+
+      alertBox.hidden = true;
+
+      if (DEMO) {
+        /* 送信先がまだ無いので、完了画面の見た目だけ確認する */
+        e.preventDefault();
+        form.hidden = true;
+        done.hidden = false;
+        done.scrollIntoView({ block: 'center' });
+      }
+    });
+  })();
+
+  /* スクロール表示（他ページと同じ） */
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+<!-- v1.3.0 -->
+</body>
+</html>
