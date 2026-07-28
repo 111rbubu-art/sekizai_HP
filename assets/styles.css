@@ -1880,12 +1880,17 @@
     repeating-linear-gradient(45deg, transparent 0 15px, rgba(26,26,26,0.03) 15px 16px),
     linear-gradient(180deg, #efece5 0%, #e3dfd6 100%);
 }
+/* 写真用の枠のままだと、アイコンに対して余白が広すぎるので浅くする */
+.service__media--icon { aspect-ratio: 5 / 3; }
+.engraving-cta__media--icon { aspect-ratio: 3 / 2; }
+
+/* 図は正方形なので、幅ではなく高さで大きさを決める */
 .service__icon,
 .engraving-cta__icon {
   position: relative;
-  width: 46%;
-  max-width: 128px;
-  height: auto;
+  width: auto;
+  height: 66%;
+  max-height: 104px;
   opacity: .82;
   transition: transform .8s cubic-bezier(.2,.7,.2,1), opacity .4s ease;
 }
@@ -1896,8 +1901,8 @@
 }
 /* .engraving-cta__media img（object-fit: cover）に負けないよう指定を強める */
 .engraving-cta__media--icon .engraving-cta__icon {
-  width: 38%;
-  max-width: 116px;
-  height: auto;
+  width: auto;
+  height: 58%;
+  max-height: 116px;
   object-fit: contain;
 }
