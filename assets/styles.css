@@ -1016,7 +1016,10 @@
   letter-spacing: 0.1em;
   color: var(--ink-soft);
   margin: 0 0 20px;
-  max-width: 64ch;
+  /* 1行あたり約44文字。日本語の本文は35〜45文字くらいが読みやすい。
+     ch は半角の「0」の幅なので、全角の文字数で決めたいときは em を使う
+     （64ch と書いていたが、実際は36文字ぶんしかなかった） */
+  max-width: 50em;
 }
 
 .reasons {
