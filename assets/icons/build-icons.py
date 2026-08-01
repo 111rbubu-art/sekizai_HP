@@ -91,10 +91,13 @@ class Icon:
             y += h
         return tiers, y, HABA[-1] * unit
 
-    def save(self, name):
-        p = MARGIN + STROKE / 2
-        vb = '%s %s %s %s' % (r(self.x0 - p), r(self.y0 - p),
-                              r(self.x1 - self.x0 + p * 2), r(self.y1 - self.y0 + p * 2))
+    def save(self, name, box=None):
+        if box:                       # 決め打ちの画枠（複数のアイコンで大きさを揃えたいとき）
+            vb = '%s %s %s %s' % tuple(r(v) for v in box)
+        else:
+            p = MARGIN + STROKE / 2
+            vb = '%s %s %s %s' % (r(self.x0 - p), r(self.y0 - p),
+                                  r(self.x1 - self.x0 + p * 2), r(self.y1 - self.y0 + p * 2))
         svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="%s" fill="none"\n'
                '     stroke="#1a1a1a" stroke-width="%s" stroke-linejoin="miter">\n'
                '%s\n</svg>\n') % (vb, STROKE, '\n'.join(self.body))
@@ -197,18 +200,26 @@ ic.save('engraving.svg')
 
 # ================================================================
 #  お墓のかたち（boseki.html の 01 / Types）
+#
+#  3つとも同じ画枠（TYPE_BOX）に描くので、並べたときの大小と
+#  地面の高さがそのまま画面に出る。
 # ================================================================
+TYPE_BOX = (0, 0, 88, 96)   # 3つ共通の画枠
+TYPE_CX  = 44.0             # 中心
+TYPE_GY  = 90.0             # 地面（下のほうに置く）
 
-WA_H = 46.0                 # 和型アイコンの全体の高さ（五輪塔の下段もこれに合わせる）
+H_WA  = 83.0                # 和型の高さ
+H_TOU = 83.0                # 五輪塔の高さ
+H_YOU = 64.0                # 洋型の高さ（前のまま）
 
 # ---------------------------------------------------------------- 和型
 # 縦に長い竿石。上の TAKASA / HABA の比率をそのまま使う
 ic = Icon()
-tiers, bottom, base_w = ic.stone(cx=30, top=10, height=WA_H)
+tiers, bottom, base_w = ic.stone(cx=TYPE_CX, top=TYPE_GY - H_WA, height=H_WA)
 for t in tiers:
     ic.rect(*t)
-ic.line(30 - base_w / 2 - 5, bottom, 30 + base_w / 2 + 5, bottom, opacity='.4')
-ic.save('type-wagata.svg')
+ic.line(TYPE_CX - base_w / 2 - 5, bottom, TYPE_CX + base_w / 2 + 5, bottom, opacity='.4')
+ic.save('type-wagata.svg', box=TYPE_BOX)
 
 # ---------------------------------------------------------------- 洋型
 # 実寸（mm）で指定する。上から 竿石・上台・芝台
@@ -217,65 +228,67 @@ YOU_TAKASA = (490, 200, 150)   # 高さ
 YOU_HABA   = (600, 730, 850)   # 幅
 
 ic = Icon()
-CX, GY = 30.0, 54.0
-YOU_H = 44.0                              # 図としての全体の高さ
-unit = YOU_H / float(sum(YOU_TAKASA))     # 縦横とも同じ縮尺（実寸の比を崩さない）
-y = GY - YOU_H
+unit = H_YOU / float(sum(YOU_TAKASA))     # 縦横とも同じ縮尺（実寸の比を崩さない）
+y = TYPE_GY - H_YOU
 for hr, wr in zip(YOU_TAKASA, YOU_HABA):
     h, w = hr * unit, wr * unit
-    ic.rect(CX - w / 2, y, w, h)
+    ic.rect(TYPE_CX - w / 2, y, w, h)
     y += h
 gw = YOU_HABA[-1] * unit
-ic.line(CX - gw / 2 - 5, GY, CX + gw / 2 + 5, GY, opacity='.4')
-ic.save('type-yougata.svg')
+ic.line(TYPE_CX - gw / 2 - 5, TYPE_GY, TYPE_CX + gw / 2 + 5, TYPE_GY, opacity='.4')
+ic.save('type-yougata.svg', box=TYPE_BOX)
 
 # ---------------------------------------------------------------- 塔型（五輪塔）
-# 下から 地輪（方形）・水輪（球）・火輪（屋根）・風輪（半月）・空輪（宝珠）
+# 下から 下段・地輪（方形）・水輪（球）・火輪（屋根）・風輪（半月）・空輪（宝珠）
+# 下段の形は和型の中台と同じ比率。全体を H_TOU に収まるよう縮める
+TOU = (
+    (HABA[2] / 3.0, TAKASA[2] / 3.0),   # 下段（和型の中台と同じ比率）
+    (26.0, 19.0),                       # 地輪（方形）
+    (22.0, 22.0),                       # 水輪（球）
+    (30.0, 14.0),                       # 火輪（屋根）
+    (17.0,  9.0),                       # 風輪（半月）
+    (14.0, 15.0),                       # 空輪（宝珠）
+)
+TW_KA = 14.0                            # 火輪の上辺
+
 ic = Icon()
-CX, GY = 30.0, 54.0
-s5 = 0.60                                  # 全体の縮尺
-w_chi, h_chi = 26 * s5, 19 * s5            # 地輪
-d_sui        = 22 * s5                     # 水輪（球）
-w_ka, h_ka   = 30 * s5, 14 * s5            # 火輪（屋根）
-tw_ka        = 14 * s5                     #   その上辺
-w_fu, h_fu   = 17 * s5, 9 * s5             # 風輪（半月）
-w_ku, h_ku   = 14 * s5, 15 * s5            # 空輪（宝珠）
+k = H_TOU / sum(h for _, h in TOU)      # 全体が H_TOU になる縮尺
+(w_base, h_base), (w_chi, h_chi), (d_sui, _), (w_ka, h_ka), (w_fu, h_fu), (w_ku, h_ku) = \
+    [(w * k, h * k) for w, h in TOU]
+d_sui *= 1.0
+tw_ka = TW_KA * k
 
-# いちばん下の段。大きさは和型の中台と同じ
-wa_unit = WA_H / float(sum(TAKASA))
-base_w, base_h = HABA[2] * wa_unit, TAKASA[2] * wa_unit
-
-y = GY
-y -= base_h
-ic.rect(CX - base_w / 2, y, base_w, base_h)
+y = TYPE_GY
+y -= h_base
+ic.rect(TYPE_CX - w_base / 2, y, w_base, h_base)
 
 y -= h_chi
-ic.rect(CX - w_chi / 2, y, w_chi, h_chi)
+ic.rect(TYPE_CX - w_chi / 2, y, w_chi, h_chi)
 
 y -= d_sui
-ic.circle(CX, y + d_sui / 2, d_sui / 2)
+ic.circle(TYPE_CX, y + d_sui / 2, d_sui / 2)
 
 y -= h_ka
 ic.raw('M%s %sL%s %sL%s %sL%s %sz'
-       % (r(CX - w_ka / 2), r(y + h_ka), r(CX - tw_ka / 2), r(y),
-          r(CX + tw_ka / 2), r(y), r(CX + w_ka / 2), r(y + h_ka)),
-       (CX - w_ka / 2, y, CX + w_ka / 2, y + h_ka))
+       % (r(TYPE_CX - w_ka / 2), r(y + h_ka), r(TYPE_CX - tw_ka / 2), r(y),
+          r(TYPE_CX + tw_ka / 2), r(y), r(TYPE_CX + w_ka / 2), r(y + h_ka)),
+       (TYPE_CX - w_ka / 2, y, TYPE_CX + w_ka / 2, y + h_ka))
 
 y -= h_fu
 ic.raw('M%s %sA%s %s 0 0 1 %s %sz'
-       % (r(CX - w_fu / 2), r(y + h_fu), r(w_fu / 2), r(h_fu),
-          r(CX + w_fu / 2), r(y + h_fu)),
-       (CX - w_fu / 2, y, CX + w_fu / 2, y + h_fu))
+       % (r(TYPE_CX - w_fu / 2), r(y + h_fu), r(w_fu / 2), r(h_fu),
+          r(TYPE_CX + w_fu / 2), r(y + h_fu)),
+       (TYPE_CX - w_fu / 2, y, TYPE_CX + w_fu / 2, y + h_fu))
 
 y -= h_ku
 ic.raw('M%s %sQ%s %s %s %sL%s %sQ%s %s %s %sz'
-       % (r(CX), r(y),
-          r(CX + w_ku / 2), r(y + h_ku * 0.5), r(CX + w_ku * 0.36), r(y + h_ku),
-          r(CX - w_ku * 0.36), r(y + h_ku),
-          r(CX - w_ku / 2), r(y + h_ku * 0.5), r(CX), r(y)),
-       (CX - w_ku / 2, y, CX + w_ku / 2, y + h_ku))
+       % (r(TYPE_CX), r(y),
+          r(TYPE_CX + w_ku / 2), r(y + h_ku * 0.5), r(TYPE_CX + w_ku * 0.36), r(y + h_ku),
+          r(TYPE_CX - w_ku * 0.36), r(y + h_ku),
+          r(TYPE_CX - w_ku / 2), r(y + h_ku * 0.5), r(TYPE_CX), r(y)),
+       (TYPE_CX - w_ku / 2, y, TYPE_CX + w_ku / 2, y + h_ku))
 
-ic.line(CX - base_w / 2 - 5, GY, CX + base_w / 2 + 5, GY, opacity='.4')
-ic.save('type-tougata.svg')
+ic.line(TYPE_CX - w_base / 2 - 5, TYPE_GY, TYPE_CX + w_base / 2 + 5, TYPE_GY, opacity='.4')
+ic.save('type-tougata.svg', box=TYPE_BOX)
 
 print('\n高さ比 %s ／ 幅比 %s' % (':'.join(map(str, TAKASA)), ':'.join(map(str, HABA))))

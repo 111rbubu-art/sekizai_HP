@@ -1051,9 +1051,10 @@
 }
 .reason__head .reason__num { margin-bottom: 0; }
 .reason__icon {
-  width: 88px; height: 64px;
+  /* 3つのSVGは同じ画枠（88×96）で描いてあるので、
+     この枠と同じ比率にしておけば、図の大小と位置がそのまま出る */
+  width: 88px; height: 96px;
   object-fit: contain;
-  object-position: right center;
   opacity: .82;
 }
 
