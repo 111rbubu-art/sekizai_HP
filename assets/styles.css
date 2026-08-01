@@ -324,11 +324,24 @@
     border-left: 1px solid var(--rule);
   }
   .service {
+    position: relative;                  /* 下の service__more::after の基準 */
     border-right: 1px solid var(--rule);
     border-bottom: 1px solid var(--rule);
     background: var(--bg);
     display: flex;
     flex-direction: column;
+  }
+  /* 図やタイトルなど、カードのどこを押してもページへ移動できるようにする。
+     リンク自体は「詳しく見る」1つのままなので、読み上げソフトにも優しい */
+  .service__more::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .service:focus-within {
+    outline: 1px solid var(--ink);
+    outline-offset: -1px;
   }
   .service__media {
     position: relative;
