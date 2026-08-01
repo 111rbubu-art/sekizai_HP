@@ -1,0 +1,24 @@
+# 写真の入れ替え画面 — 検索よけと、控えの保護
+#
+# パスワード（Basic認証）は、さくらのコントロールパネルの
+# 「アクセス制限」で kanri フォルダーに設定するのが簡単です。
+# 手で設定する場合は、下の AuthUserFile のコメントを外して
+# 絶対パスを書き換えてください。
+
+# --- パスワード保護（コントロールパネルを使う場合は不要） ---
+# AuthType Basic
+# AuthName "Shoji Sekizaiten Admin"
+# AuthUserFile /home/アカウント名/www/kanri/.htpasswd
+# Require valid-user
+
+# --- 検索エンジンに出さない ---
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+
+# --- 控えのフォルダーは外から見せない ---
+RedirectMatch 404 ^/kanri/_backup/
+
+# --- 中身の一覧を出さない ---
+Options -Indexes
+DirectoryIndex index.php

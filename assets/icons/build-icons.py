@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """サービスの線画アイコンを、墓石の実寸比から組み立てる。
 
-    python3 images/icons/build-icons.py
+    python3 assets/icons/build-icons.py
 
 比率を変えたいときは下の TAKASA / HABA を書き換えて実行し直してください。
 座標は自動で計算され、viewBox も描画範囲に合わせて詰められます。

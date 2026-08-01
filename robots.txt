@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# 外注先ポータル（パスワード保護。検索にも出さない）
+Disallow: /gaichu/
+
+# 写真の入れ替え画面
+Disallow: /kanri/
+
+# お客様からの受付（今後追加）
+Disallow: /uketsuke/
