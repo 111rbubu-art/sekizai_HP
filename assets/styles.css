@@ -1,7 +1,12 @@
 /* ---------- Reset & base ---------- */
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* 上に貼りつくナビ（高さ72px）の下に見出しが隠れないように */
+    scroll-padding-top: 88px;
+  }
   body {
     font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
     color: #1a1a1a;
@@ -429,6 +434,30 @@
   .service__more:hover { gap: 16px; }
   .service__more .arrow { transition: transform .3s ease; }
   .service:hover .service__more .arrow { transform: translateX(4px); }
+
+  /* 施工例へのリンク（「詳しく見る」の下に置く控えめなリンク）
+     カード全体のリンク面（service__more::after）より前に出しておかないと
+     押せなくなるので、z-index を 2 にしてある */
+  .service__works {
+    position: relative;
+    z-index: 2;
+    align-self: flex-start;
+    margin-top: 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--stone);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 3px;
+    transition: color .25s ease, border-color .25s ease, gap .3s ease;
+  }
+  .service__works:hover { color: var(--ink); border-bottom-color: var(--rule-strong); gap: 12px; }
+  .service__works .arrow { transition: transform .3s ease; }
+  .service__works:hover .arrow { transform: translateX(3px); }
+  /* 指で押しやすいように、スマホでは上下を少し広げる */
+  @media (max-width: 820px) {
+    .service__works { margin-top: 10px; padding-top: 8px; padding-bottom: 8px; }
+  }
 
   /* ---------- About ---------- */
   .about {
