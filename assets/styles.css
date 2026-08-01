@@ -16,6 +16,14 @@
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* 「リフォ／ーム」「スピーカ／ー」のように、長音符や小さい仮名が
+       行のあたまに来ないようにする（日本語の禁則処理） */
+    line-break: strict;
+  }
+  /* 文章の最後の行に1文字だけ残る、いわゆる泣き別れを減らす。
+     対応していないブラウザーでは、これまでどおりの折り返しになる */
+  p, li, dd, dt, figcaption, .callout, blockquote {
+    text-wrap: pretty;
   }
   img { max-width: 100%; display: block; }
   a { color: inherit; text-decoration: none; }
