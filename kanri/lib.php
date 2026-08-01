@@ -70,6 +70,17 @@ function collect_slots()
         }
     }
 
+    // 複数のページで使っている写真は、PAGE_LABELS の並びで先に出るページを「本籍」にする
+    // （そうしないと、ファイル名のアルファベット順で拾った順になってしまう）
+    $order = array_flip(array_values($PAGE_LABELS));
+    foreach ($slots as $rel => $s) {
+        usort($slots[$rel]['pages'], function ($a, $b) use ($order) {
+            $ia = isset($order[$a]) ? $order[$a] : 999;
+            $ib = isset($order[$b]) ? $order[$b] : 999;
+            return $ia === $ib ? strcmp($a, $b) : $ia - $ib;
+        });
+    }
+
     uksort($slots, 'slot_sort');
     return $slots;
 }
@@ -98,18 +109,28 @@ function slot_info($rel)
     );
 }
 
-/** 中身がほぼ均一なら、まだ差し替えていない仮画像とみなす */
+/**
+ * 中身がほぼ均一なら、まだ差し替えていない仮画像とみなす。
+ * 等間隔の格子で見る（ランダムに拾うと、開くたびに判定が変わってしまうため）。
+ */
 function is_placeholder($path)
 {
     $im = @open_image($path);
     if (!$im) return false;
     $w = imagesx($im); $h = imagesy($im);
+
+    $n = 16;                       // 16 × 16 = 256 か所
     $vals = array();
-    for ($i = 0; $i < 40; $i++) {
-        $c = imagecolorat($im, rand(0, $w - 1), rand(0, $h - 1));
-        $vals[] = (($c >> 16 & 0xFF) + ($c >> 8 & 0xFF) + ($c & 0xFF)) / 3;
+    for ($y = 0; $y < $n; $y++) {
+        for ($x = 0; $x < $n; $x++) {
+            $px = (int)(($x + 0.5) * $w / $n);
+            $py = (int)(($y + 0.5) * $h / $n);
+            $c = imagecolorat($im, $px, $py);
+            $vals[] = (($c >> 16 & 0xFF) + ($c >> 8 & 0xFF) + ($c & 0xFF)) / 3;
+        }
     }
     imagedestroy($im);
+
     $mean = array_sum($vals) / count($vals);
     $var = 0;
     foreach ($vals as $v) $var += ($v - $mean) * ($v - $mean);
