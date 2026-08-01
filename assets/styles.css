@@ -85,6 +85,7 @@
     font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
     font-size: 20px;
     letter-spacing: 0.18em;
+    white-space: nowrap;      /* 「庄司石材 / 店」と割れないように */
   }
   .brand__en {
     font-family: Georgia, serif;
@@ -92,6 +93,14 @@
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--stone);
+    white-space: nowrap;
+  }
+  /* 幅が足りなくなる手前で、英字の店名は引っ込める */
+  @media (max-width: 1240px) and (min-width: 1025px) {
+    .brand__en { display: none; }
+  }
+  @media (max-width: 420px) {
+    .brand__en { display: none; }
   }
   .nav__menu {
     display: flex;
@@ -117,6 +126,7 @@
     letter-spacing: 0.1em;
     padding: 8px 16px;
     border: 1px solid var(--ink);
+    white-space: nowrap;      /* 電話番号を途中で折り返さない */
     transition: background .25s ease, color .25s ease;
   }
   .nav__tel:hover { background: var(--ink); color: var(--bg); }
@@ -173,6 +183,11 @@
     letter-spacing: 0.08em;
     margin: 0 0 32px;
   }
+  /* 幅の狭い端末では「まごころを込めた」の8文字が画面からはみ出すので、
+     はみ出さない大きさまで文字を縮める */
+  @media (max-width: 400px) {
+    .hero__title { font-size: 9.4vw; }
+  }
   .hero__title em {
     font-style: normal;
     color: #d8d3c8;
@@ -186,7 +201,8 @@
     margin: 0 0 44px;
   }
   .btn {
-    display: inline-flex; align-items: center; gap: 14px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+    text-align: center;
     padding: 16px 28px;
     border: 1px solid rgba(247,246,243,0.6);
     color: #f7f6f3;
@@ -204,6 +220,11 @@
     color: #1a1a1a; border-color: var(--ink);
   }
   .btn--dark:hover { background: #1a1a1a; color: #f7f6f3; }
+
+  /* 幅の狭いスマホでも「0120-333-845 に電話する →」が1行に収まるように */
+  @media (max-width: 400px) {
+    .btn { padding: 15px 16px; gap: 10px; letter-spacing: 0.12em; }
+  }
 
   .hero__stats {
     border-left: 1px solid rgba(247,246,243,0.18);
@@ -634,6 +655,13 @@
     letter-spacing: 0.12em;
     line-height: 1.9;
     color: rgba(247,246,243,0.88);
+    overflow-wrap: anywhere;      /* 長いメールアドレスが画面からはみ出さないように */
+  }
+  /* 幅の狭い端末では、項目名を上に置いて本文に幅をゆずる */
+  @media (max-width: 400px) {
+    .contact__meta { grid-template-columns: 1fr; gap: 4px 0; }
+    .contact__meta dt { margin-top: 14px; }
+    .contact__meta dt:first-of-type { margin-top: 0; }
   }
 
   /* ---------- Footer ---------- */
