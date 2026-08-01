@@ -199,31 +199,34 @@ ic.save('engraving.svg')
 #  お墓のかたち（boseki.html の 01 / Types）
 # ================================================================
 
+WA_H = 46.0                 # 和型アイコンの全体の高さ（五輪塔の下段もこれに合わせる）
+
 # ---------------------------------------------------------------- 和型
 # 縦に長い竿石。上の TAKASA / HABA の比率をそのまま使う
 ic = Icon()
-tiers, bottom, base_w = ic.stone(cx=30, top=10, height=46)
+tiers, bottom, base_w = ic.stone(cx=30, top=10, height=WA_H)
 for t in tiers:
     ic.rect(*t)
 ic.line(30 - base_w / 2 - 5, bottom, 30 + base_w / 2 + 5, bottom, opacity='.4')
 ic.save('type-wagata.svg')
 
 # ---------------------------------------------------------------- 洋型
-# 横長で背が低い。竿石の天面をわずかに傾ける
-YOU_TAKASA = (30, 24, 14)   # 竿石・上台・芝台
-YOU_HABA   = (58, 86, 100)
+# 実寸（mm）で指定する。上から 竿石・上台・芝台
+# 天面は傾けない。傾いた石は地震対策のアイコンで「ずれ」を表しているため
+YOU_TAKASA = (490, 200, 150)   # 高さ
+YOU_HABA   = (600, 730, 850)   # 幅
 
 ic = Icon()
-CX, GY = 30.0, 52.0
-unit = 30.0 / float(sum(YOU_TAKASA))      # 全体の高さ 30
-wunit = 46.0 / float(YOU_HABA[-1])        # 芝台の幅 46
-y = GY - 30.0
-# 天面は傾けない。傾いた石は地震対策のアイコンで「ずれ」を表しているため
+CX, GY = 30.0, 54.0
+YOU_H = 44.0                              # 図としての全体の高さ
+unit = YOU_H / float(sum(YOU_TAKASA))     # 縦横とも同じ縮尺（実寸の比を崩さない）
+y = GY - YOU_H
 for hr, wr in zip(YOU_TAKASA, YOU_HABA):
-    h, w = hr * unit, wr * wunit
+    h, w = hr * unit, wr * unit
     ic.rect(CX - w / 2, y, w, h)
     y += h
-ic.line(CX - 46 / 2 - 5, GY, CX + 46 / 2 + 5, GY, opacity='.4')
+gw = YOU_HABA[-1] * unit
+ic.line(CX - gw / 2 - 5, GY, CX + gw / 2 + 5, GY, opacity='.4')
 ic.save('type-yougata.svg')
 
 # ---------------------------------------------------------------- 塔型（五輪塔）
@@ -238,7 +241,14 @@ tw_ka        = 14 * s5                     #   その上辺
 w_fu, h_fu   = 17 * s5, 9 * s5             # 風輪（半月）
 w_ku, h_ku   = 14 * s5, 15 * s5            # 空輪（宝珠）
 
+# いちばん下の段。大きさは和型の中台と同じ
+wa_unit = WA_H / float(sum(TAKASA))
+base_w, base_h = HABA[2] * wa_unit, TAKASA[2] * wa_unit
+
 y = GY
+y -= base_h
+ic.rect(CX - base_w / 2, y, base_w, base_h)
+
 y -= h_chi
 ic.rect(CX - w_chi / 2, y, w_chi, h_chi)
 
@@ -265,7 +275,7 @@ ic.raw('M%s %sQ%s %s %s %sL%s %sQ%s %s %s %sz'
           r(CX - w_ku / 2), r(y + h_ku * 0.5), r(CX), r(y)),
        (CX - w_ku / 2, y, CX + w_ku / 2, y + h_ku))
 
-ic.line(CX - w_chi / 2 - 5, GY, CX + w_chi / 2 + 5, GY, opacity='.4')
+ic.line(CX - base_w / 2 - 5, GY, CX + base_w / 2 + 5, GY, opacity='.4')
 ic.save('type-tougata.svg')
 
 print('\n高さ比 %s ／ 幅比 %s' % (':'.join(map(str, TAKASA)), ':'.join(map(str, HABA))))
