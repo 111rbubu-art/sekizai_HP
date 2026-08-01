@@ -1071,6 +1071,9 @@
 }
 .ex__head::after { content: ""; flex: 1; height: 1px; background: var(--rule); order: 1; }
 .ex__nav { order: 2; display: flex; align-items: center; gap: 8px; }
+/* 石が1種類のときや、JavaScriptが効かないときは矢印を出さない
+   （display を指定すると hidden が効かなくなるので、明示的に消す） */
+.ex__nav[hidden] { display: none; }
 .ex__count {
   font-family: Georgia, serif; font-size: 11px; letter-spacing: 0.12em;
   color: var(--stone); min-width: 3.2em; text-align: center;
