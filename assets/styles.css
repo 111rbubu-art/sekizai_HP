@@ -1041,6 +1041,22 @@
   color: var(--stone);
   margin-bottom: 16px;
 }
+/* 番号の横に、かたちを表す線画を置く（お墓のかたち） */
+.reason__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.reason__head .reason__num { margin-bottom: 0; }
+.reason__icon {
+  width: 88px; height: 64px;
+  object-fit: contain;
+  object-position: right center;
+  opacity: .82;
+}
+
 .reason__title {
   font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
   font-size: 18px;

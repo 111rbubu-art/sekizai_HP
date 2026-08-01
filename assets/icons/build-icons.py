@@ -67,6 +67,10 @@ class Icon:
         self.body.append('  <path d="%s" stroke-linejoin="round"%s/>' % (d, a))
         self._grow(cx - rad, cy - rad, cx + rad, cy + rad)
 
+    def circle(self, cx, cy, rad):
+        self.body.append('  <circle cx="%s" cy="%s" r="%s"/>' % (r(cx), r(cy), r(rad)))
+        self._grow(cx - rad, cy - rad, cx + rad, cy + rad)
+
     def tilted(self, x, y, w, h, deg, opacity=None):
         """下辺の角を軸にして傾けた石。地震で竿石がずれた様子に使う。"""
         px, py = (x if deg > 0 else x + w), y + h
@@ -190,5 +194,78 @@ ic.line(4, 51, 60, 51, opacity='.4')
 ic.raw('M46.5 38.5 58 27l3.2 3.2L49.7 41.7z', (46.5, 27, 61.2, 41.7))
 ic.raw('m46.5 38.5-3.4 6.6 6.6-3.4', (43.1, 38.5, 50.1, 45.1), ' stroke-linejoin="round"')
 ic.save('engraving.svg')
+
+# ================================================================
+#  お墓のかたち（boseki.html の 01 / Types）
+# ================================================================
+
+# ---------------------------------------------------------------- 和型
+# 縦に長い竿石。上の TAKASA / HABA の比率をそのまま使う
+ic = Icon()
+tiers, bottom, base_w = ic.stone(cx=30, top=10, height=46)
+for t in tiers:
+    ic.rect(*t)
+ic.line(30 - base_w / 2 - 5, bottom, 30 + base_w / 2 + 5, bottom, opacity='.4')
+ic.save('type-wagata.svg')
+
+# ---------------------------------------------------------------- 洋型
+# 横長で背が低い。竿石の天面をわずかに傾ける
+YOU_TAKASA = (30, 24, 14)   # 竿石・上台・芝台
+YOU_HABA   = (58, 86, 100)
+
+ic = Icon()
+CX, GY = 30.0, 52.0
+unit = 30.0 / float(sum(YOU_TAKASA))      # 全体の高さ 30
+wunit = 46.0 / float(YOU_HABA[-1])        # 芝台の幅 46
+y = GY - 30.0
+# 天面は傾けない。傾いた石は地震対策のアイコンで「ずれ」を表しているため
+for hr, wr in zip(YOU_TAKASA, YOU_HABA):
+    h, w = hr * unit, wr * wunit
+    ic.rect(CX - w / 2, y, w, h)
+    y += h
+ic.line(CX - 46 / 2 - 5, GY, CX + 46 / 2 + 5, GY, opacity='.4')
+ic.save('type-yougata.svg')
+
+# ---------------------------------------------------------------- 塔型（五輪塔）
+# 下から 地輪（方形）・水輪（球）・火輪（屋根）・風輪（半月）・空輪（宝珠）
+ic = Icon()
+CX, GY = 30.0, 54.0
+s5 = 0.60                                  # 全体の縮尺
+w_chi, h_chi = 26 * s5, 19 * s5            # 地輪
+d_sui        = 22 * s5                     # 水輪（球）
+w_ka, h_ka   = 30 * s5, 14 * s5            # 火輪（屋根）
+tw_ka        = 14 * s5                     #   その上辺
+w_fu, h_fu   = 17 * s5, 9 * s5             # 風輪（半月）
+w_ku, h_ku   = 14 * s5, 15 * s5            # 空輪（宝珠）
+
+y = GY
+y -= h_chi
+ic.rect(CX - w_chi / 2, y, w_chi, h_chi)
+
+y -= d_sui
+ic.circle(CX, y + d_sui / 2, d_sui / 2)
+
+y -= h_ka
+ic.raw('M%s %sL%s %sL%s %sL%s %sz'
+       % (r(CX - w_ka / 2), r(y + h_ka), r(CX - tw_ka / 2), r(y),
+          r(CX + tw_ka / 2), r(y), r(CX + w_ka / 2), r(y + h_ka)),
+       (CX - w_ka / 2, y, CX + w_ka / 2, y + h_ka))
+
+y -= h_fu
+ic.raw('M%s %sA%s %s 0 0 1 %s %sz'
+       % (r(CX - w_fu / 2), r(y + h_fu), r(w_fu / 2), r(h_fu),
+          r(CX + w_fu / 2), r(y + h_fu)),
+       (CX - w_fu / 2, y, CX + w_fu / 2, y + h_fu))
+
+y -= h_ku
+ic.raw('M%s %sQ%s %s %s %sL%s %sQ%s %s %s %sz'
+       % (r(CX), r(y),
+          r(CX + w_ku / 2), r(y + h_ku * 0.5), r(CX + w_ku * 0.36), r(y + h_ku),
+          r(CX - w_ku * 0.36), r(y + h_ku),
+          r(CX - w_ku / 2), r(y + h_ku * 0.5), r(CX), r(y)),
+       (CX - w_ku / 2, y, CX + w_ku / 2, y + h_ku))
+
+ic.line(CX - w_chi / 2 - 5, GY, CX + w_chi / 2 + 5, GY, opacity='.4')
+ic.save('type-tougata.svg')
 
 print('\n高さ比 %s ／ 幅比 %s' % (':'.join(map(str, TAKASA)), ':'.join(map(str, HABA))))
