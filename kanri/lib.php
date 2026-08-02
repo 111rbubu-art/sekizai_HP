@@ -21,6 +21,7 @@ $PAGE_LABELS = array(
     'boseki.html'    => 'お墓 新規',
     'cleaning.html'  => 'クリーニング',
     'jishin.html'    => '地震対策',
+    'coating.html'   => '石材コーティング',
     'reform.html'    => 'リフォーム',
     'engraving.html' => '追加彫刻',
     'works.html'     => '施工例（一覧）',

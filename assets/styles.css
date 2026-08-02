@@ -108,8 +108,9 @@
     color: var(--stone);
     white-space: nowrap;
   }
-  /* 幅が足りなくなる手前で、英字の店名は引っ込める */
-  @media (max-width: 1240px) and (min-width: 1025px) {
+  /* メニューが8項目あるため、横並びのときは英字の店名を出す余地がない。
+     ハンバーガーに切り替わる 1024px 以下では、余裕があるので出す */
+  @media (min-width: 1025px) {
     .brand__en { display: none; }
   }
   @media (max-width: 420px) {
