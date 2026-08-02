@@ -23,6 +23,7 @@ $PAGE_LABELS = array(
     'jishin.html'    => '地震対策',
     'reform.html'    => 'リフォーム',
     'engraving.html' => '追加彫刻',
+    'works.html'     => '施工例（一覧）',
     'company.html'   => '会社概要',
     'pizza.html'     => 'ピザ窯',
     'speaker.html'   => '石のスピーカー',
