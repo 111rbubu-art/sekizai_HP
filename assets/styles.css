@@ -1336,6 +1336,35 @@
   display: block;
 }
 
+/* 注意書きの中に置く、関連ページへのリンク */
+.callout__links {
+  list-style: none;
+  margin: clamp(18px, 2vw, 26px) 0 0;
+  padding: clamp(16px, 1.8vw, 22px) 0 0;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  gap: clamp(14px, 1.6vw, 20px);
+}
+.callout__links a {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  font-size: clamp(15px, 1.6vw, 17px);
+  letter-spacing: 0.08em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--rule-strong);
+  transition: gap .3s ease;
+}
+.callout__links a:hover { gap: 15px; }
+.callout__links a .arrow { transition: transform .3s ease; }
+.callout__links a:hover .arrow { transform: translateX(3px); }
+.callout__links small {
+  display: block;
+  margin-top: 8px;
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-size: 13px; line-height: 1.95; letter-spacing: 0.08em;
+  color: var(--stone);
+}
+
 .issues {
   list-style: none;
   padding: 0;
