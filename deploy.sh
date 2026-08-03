@@ -39,6 +39,7 @@ done
 #   uketsuke/   お客様からの受付（今後追加する予定）
 #   kanri/      写真の入れ替え画面。_backup/ に控えが入っている
 #   images/     差し替えた写真はサーバ側が正。git のほうが古い
+#   works/      従業員が登録した施工例。これもサーバ側が正
 #
 # --- 以下は「消さないため」ではなく「今はまだ触らないため」の除外 ---
 #
@@ -60,6 +61,7 @@ KEEP=(
   --exclude 'uketsuke/'
   --exclude 'kanri/'
   --exclude 'images/'
+  --exclude 'works/'
 )
 
 # 開発用のファイルは送らない
@@ -101,9 +103,16 @@ if [ -n "$DRY" ]; then
 --- 確認してください ---
   1. deleting の行に gaichu/ wp/ index.php .htaccess が出ていないか
      出ていたら中止。運用中のポータルや WordPress が消えます
-  2. deleting の行に kanri/ や images/ が出ていないか
-     出ていたら、差し替えた写真が消えます
+  2. deleting の行に kanri/ images/ works/ が出ていないか
+     出ていたら、差し替えた写真や登録した施工例が消えます
 MSG
 else
-  echo "デプロイ完了"
+  cat <<'MSG'
+デプロイ完了
+
+--- 転送のあとに、必ず一度だけ ---
+  kanri/works.php を開いて「ページを作り直す」を押してください。
+  works.html と各サービスページを丸ごと入れ替えたため、
+  施工例の部分が手元の（古い）内容に戻っています。
+MSG
 fi

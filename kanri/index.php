@@ -38,49 +38,7 @@ foreach ($slots as $rel => $s) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>写真の入れ替え — 庄司石材店</title>
-<style>
-:root{--bg:#f7f6f3;--soft:#efece5;--ink:#1a1a1a;--stone:#666;--rule:rgba(26,26,26,.14)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;letter-spacing:.04em;
-  font-family:system-ui,-apple-system,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;font-size:15px}
-.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
-header.top{background:#fff;border-bottom:1px solid var(--rule);padding:22px 0}
-h1{margin:0;font-size:20px;letter-spacing:.14em;font-weight:400;
-  font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif}
-.sub{margin:6px 0 0;font-size:12.5px;color:var(--stone);letter-spacing:.06em}
-.count{margin-top:14px;font-size:12.5px;color:var(--stone)}
-.count b{color:var(--ink);font-weight:600}
-
-.flash{margin:20px 0 0;padding:16px 20px;border:1px solid var(--ink);background:#fff;font-size:14px}
-.flash.ng{border-color:#9c4128;background:#f7ece8;color:#7d3320}
-.warn{margin:20px 0 0;padding:18px 20px;border:1px solid #9c4128;background:#f7ece8;color:#7d3320;font-size:14px}
-.warn b{display:block;margin-bottom:6px}
-
-h2{margin:44px 0 4px;font-size:16px;letter-spacing:.12em;font-weight:400;
-  font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
-  padding-bottom:10px;border-bottom:1px solid var(--rule)}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:20px}
-.card{background:#fff;border:1px solid var(--rule);display:flex;flex-direction:column}
-.thumb{position:relative;aspect-ratio:4/3;background:var(--soft);overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:contain;display:block}
-.tag{position:absolute;top:8px;left:8px;font-size:10px;letter-spacing:.16em;padding:3px 8px;
-  background:rgba(26,26,26,.72);color:#f7f6f3}
-.tag.ok{background:rgba(40,90,60,.82)}
-.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
-.name{font-size:12.5px;letter-spacing:.02em;word-break:break-all}
-.meta{font-size:11.5px;color:var(--stone);line-height:1.7}
-.alt{font-size:12px;color:var(--stone);border-left:2px solid var(--rule);padding-left:9px}
-form{margin-top:auto;display:flex;flex-direction:column;gap:8px}
-input[type=file]{font:inherit;font-size:12.5px;width:100%}
-button{font:inherit;font-size:13px;letter-spacing:.14em;padding:11px 16px;border:1px solid var(--ink);
-  background:var(--ink);color:var(--bg);cursor:pointer;transition:background .25s,color .25s}
-button:hover{background:transparent;color:var(--ink)}
-button[disabled]{opacity:.35;cursor:default}
-footer{margin:60px 0 40px;padding-top:24px;border-top:1px solid var(--rule);font-size:12px;color:var(--stone)}
-footer a{color:inherit}
-@media(max-width:600px){.grid{grid-template-columns:1fr}}
-</style>
+<link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
@@ -89,6 +47,10 @@ footer a{color:inherit}
     <h1>写真の入れ替え</h1>
     <p class="sub">庄司石材店ホームページ</p>
     <p class="count">写真枠 <b><?= $total ?></b> か所　／　差し替え済み <b><?= $done ?></b>　残り <b><?= $total - $done ?></b></p>
+    <nav class="tabs">
+      <a class="on" href="index.php">写真の入れ替え</a>
+      <a href="works.php">施工例の登録</a>
+    </nav>
   </div>
 </header>
 

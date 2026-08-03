@@ -1,0 +1,503 @@
+<?php
+/*
+ * 施工例の登録 — 管理画面
+ * ------------------------------------------------------------------
+ * 登録・編集すると、その場で works.html と各サービスページを書き出します。
+ * お客様が見るページは静的な HTML のままなので、この画面を使っていない
+ * ときに PHP が動くことはありません。
+ *
+ * 設置とパスワードの手順は同じフォルダーの README.md をご覧ください。
+ */
+
+require __DIR__ . '/works_lib.php';
+session_start();
+
+define('ADD_ROWS', 4);          // 一度に選べる写真の欄の数
+
+function flash($type, $msg)
+{
+    $_SESSION['wflash'] = array('type' => $type, 'msg' => $msg);
+}
+
+function go($to = 'works.php')
+{
+    header('Location: ' . $to);
+    exit;
+}
+
+/** 入力された文字を整える（制御文字と前後の空白を落とし、長さを切る） */
+function clean_text($s, $max)
+{
+    $s = isset($s) ? (string)$s : '';
+    $s = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $s);
+    $s = preg_replace('/\s+/u', ' ', $s);
+    $s = trim($s);
+    if (mb_strlen($s, 'UTF-8') > $max) $s = mb_substr($s, 0, $max, 'UTF-8');
+    return $s;
+}
+
+/** 書き出した結果を、そのまま従業員に見せる文にする */
+function rebuild_message($items)
+{
+    $r = works_regenerate($items);
+    if (count($r['ng'])) {
+        return array('ng', 'ページの書き出しに失敗しました（' . implode('・', $r['ng'])
+            . '）。ファイルの権限が 644 になっているかご確認ください。');
+    }
+    return array('ok', 'ページを書き出しました（' . implode('・', $r['ok']) . '）。');
+}
+
+
+/* ============================================================
+ * 受け取って保存する
+ * ========================================================== */
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // 受信上限を超えると PHP は $_POST も $_FILES も捨てるので、先に分かりやすく返す
+    if (!count($_POST) && !count($_FILES) && !empty($_SERVER['CONTENT_LENGTH'])) {
+        flash('ng', '写真が大きすぎます（サーバーの受信上限 ' . ini_get('post_max_size')
+            . '）。枚数を減らすか、1枚ずつお試しください。');
+        go();
+    }
+
+    $do    = isset($_POST['do']) ? $_POST['do'] : '';
+    $items = works_load();
+
+    /* --- 新しく登録する --- */
+    if ($do === 'add') {
+        $cat = isset($_POST['cat']) ? $_POST['cat'] : '';
+        if (!isset($WORK_CATS[$cat])) { flash('ng', '分類が選ばれていません。'); go(); }
+
+        $id = works_new_id($items);
+        $photos = array();
+        $errs = array();
+
+        for ($i = 0; $i < ADD_ROWS; $i++) {
+            if (!isset($_FILES['photo']['error'][$i])) continue;
+            $err = $_FILES['photo']['error'][$i];
+            if ($err === UPLOAD_ERR_NO_FILE) continue;
+            if ($err !== UPLOAD_ERR_OK) {
+                $errs[] = '写真' . ($i + 1) . '：アップロードに失敗しました（コード ' . $err . '）';
+                continue;
+            }
+            $r = works_store_photo($_FILES['photo']['tmp_name'][$i], $id, count($photos) + 1);
+            if (strpos($r, 'works/photos/') !== 0) {
+                $errs[] = '写真' . ($i + 1) . '：' . $r;
+                continue;
+            }
+            $photos[] = array(
+                'src' => $r,
+                'cap' => clean_text(isset($_POST['cap'][$i]) ? $_POST['cap'][$i] : '', 20),
+            );
+        }
+
+        if (!count($photos)) {
+            flash('ng', '写真が1枚も保存できませんでした。' . (count($errs) ? implode(' / ', $errs) : '写真をお選びください。'));
+            go();
+        }
+
+        $items[] = array(
+            'id'      => $id,
+            'cat'     => $cat,
+            'stone'   => clean_text(isset($_POST['stone']) ? $_POST['stone'] : '', 40),
+            'note'    => clean_text(isset($_POST['note']) ? $_POST['note'] : '', 200),
+            'photos'  => $photos,
+            'created' => date('Y-m-d H:i:s'),
+        );
+
+        if (!works_save($items)) { flash('ng', '登録できませんでした。works フォルダーの権限をご確認ください。'); go(); }
+        list($t, $m) = rebuild_message($items);
+        flash($t === 'ok' ? 'ok' : 'ng',
+            '施工例を登録しました（写真 ' . count($photos) . '枚）。' . $m . (count($errs) ? ' ※ ' . implode(' / ', $errs) : ''));
+        go();
+    }
+
+    /* --- 内容を書き換える --- */
+    if ($do === 'update') {
+        $id = isset($_POST['id']) ? $_POST['id'] : '';
+        list($idx, $it) = works_find($items, $id);
+        if ($idx < 0) { flash('ng', 'その施工例は見つかりませんでした。'); go(); }
+
+        $cat = isset($_POST['cat']) ? $_POST['cat'] : '';
+        if (isset($WORK_CATS[$cat])) $it['cat'] = $cat;
+        $it['stone'] = clean_text(isset($_POST['stone']) ? $_POST['stone'] : '', 40);
+        $it['note']  = clean_text(isset($_POST['note']) ? $_POST['note'] : '', 200);
+
+        // いまある写真の説明を書き換える
+        $ps = works_photos($it);
+        foreach ($ps as $n => $p) {
+            if (isset($_POST['pcap'][$n])) $ps[$n]['cap'] = clean_text($_POST['pcap'][$n], 20);
+        }
+
+        // 追加された写真
+        $errs = array();
+        for ($i = 0; $i < ADD_ROWS; $i++) {
+            if (!isset($_FILES['photo']['error'][$i])) continue;
+            $err = $_FILES['photo']['error'][$i];
+            if ($err === UPLOAD_ERR_NO_FILE) continue;
+            if ($err !== UPLOAD_ERR_OK) { $errs[] = '写真の追加に失敗しました（コード ' . $err . '）'; continue; }
+            $r = works_store_photo($_FILES['photo']['tmp_name'][$i], $id, count($ps) + 1);
+            if (strpos($r, 'works/photos/') !== 0) { $errs[] = $r; continue; }
+            $ps[] = array('src' => $r, 'cap' => clean_text(isset($_POST['cap'][$i]) ? $_POST['cap'][$i] : '', 20));
+        }
+
+        $it['photos'] = $ps;
+        $items[$idx] = $it;
+
+        if (!works_save($items)) { flash('ng', '保存できませんでした。'); go(); }
+        list($t, $m) = rebuild_message($items);
+        flash($t === 'ok' ? 'ok' : 'ng', '書き換えました。' . $m . (count($errs) ? ' ※ ' . implode(' / ', $errs) : ''));
+        // 写真を足したあとに順番を直したくなることが多いので、この画面に留まる
+        go('works.php?edit=' . rawurlencode($id));
+    }
+
+    /* --- 写真を1枚消す --- */
+    if ($do === 'photo_del') {
+        $id = isset($_POST['id']) ? $_POST['id'] : '';
+        $n  = isset($_POST['n']) ? (int)$_POST['n'] : -1;
+        list($idx, $it) = works_find($items, $id);
+        if ($idx < 0) { flash('ng', 'その施工例は見つかりませんでした。'); go(); }
+
+        $ps = works_photos($it);
+        if (!isset($ps[$n])) { flash('ng', 'その写真は見つかりませんでした。'); go(); }
+        if (count($ps) <= 1) { flash('ng', '写真が1枚もない施工例にはできません。施工例ごと削除してください。'); go('works.php?edit=' . rawurlencode($id)); }
+
+        works_delete_photo($ps[$n]['src']);
+        array_splice($ps, $n, 1);
+        $it['photos'] = $ps;
+        $items[$idx] = $it;
+
+        works_save($items);
+        rebuild_message($items);
+        flash('ok', '写真を1枚削除しました。');
+        go('works.php?edit=' . rawurlencode($id));
+    }
+
+    /* --- 写真の順番を入れ替える --- */
+    if ($do === 'photo_move') {
+        $id  = isset($_POST['id']) ? $_POST['id'] : '';
+        $n   = isset($_POST['n']) ? (int)$_POST['n'] : -1;
+        $dir = (isset($_POST['dir']) && $_POST['dir'] === 'down') ? 1 : -1;
+        list($idx, $it) = works_find($items, $id);
+        if ($idx < 0) { flash('ng', 'その施工例は見つかりませんでした。'); go(); }
+
+        $ps = works_photos($it);
+        $m = $n + $dir;
+        if (isset($ps[$n]) && isset($ps[$m])) {
+            $t = $ps[$n]; $ps[$n] = $ps[$m]; $ps[$m] = $t;
+            $it['photos'] = $ps;
+            $items[$idx] = $it;
+            works_save($items);
+            rebuild_message($items);
+            flash('ok', '写真の順番を入れ替えました。1枚目が一覧に出る写真になります。');
+        }
+        go('works.php?edit=' . rawurlencode($id));
+    }
+
+    /* --- 施工例ごと消す --- */
+    if ($do === 'delete') {
+        $id = isset($_POST['id']) ? $_POST['id'] : '';
+        list($idx, $it) = works_find($items, $id);
+        if ($idx < 0) { flash('ng', 'その施工例は見つかりませんでした。'); go(); }
+
+        foreach (works_photos($it) as $p) works_delete_photo($p['src']);
+        array_splice($items, $idx, 1);
+
+        if (!works_save($items)) { flash('ng', '削除できませんでした。'); go(); }
+        list($t, $m) = rebuild_message($items);
+        flash($t === 'ok' ? 'ok' : 'ng', '施工例を削除しました。' . $m);
+        go();
+    }
+
+    /* --- ページだけ作り直す --- */
+    if ($do === 'rebuild') {
+        list($t, $m) = rebuild_message($items);
+        flash($t, $m);
+        go();
+    }
+
+    flash('ng', '不明な操作です。');
+    go();
+}
+
+
+/* ============================================================
+ * 画面を組み立てる
+ * ========================================================== */
+
+$items = works_load();
+$flash = isset($_SESSION['wflash']) ? $_SESSION['wflash'] : null;
+unset($_SESSION['wflash']);
+
+$editId = isset($_GET['edit']) ? $_GET['edit'] : '';
+list($editIdx, $edit) = $editId !== '' ? works_find($items, $editId) : array(-1, null);
+
+$counts = array();
+foreach ($items as $it) {
+    $c = isset($it['cat']) ? $it['cat'] : '';
+    $counts[$c] = (isset($counts[$c]) ? $counts[$c] : 0) + 1;
+}
+
+/** 写真の欄（新規・追加で共通） */
+function photo_rows($caps)
+{
+    $o = '';
+    for ($i = 0; $i < ADD_ROWS; $i++) {
+        $o .= '<div class="field">';
+        $o .= '<label>写真' . ($i + 1) . ($i === 0 ? '（1枚目が一覧に出ます）' : '') . '</label>';
+        $o .= '<input type="file" name="photo[]" accept="image/jpeg,image/png,image/webp">';
+        $o .= '<input type="text" name="cap[' . $i . ']" maxlength="20" placeholder="写真の説明（例：施工前）" style="margin-top:7px">';
+        $o .= '<div class="caps">';
+        foreach ($caps as $c) {
+            $o .= '<button type="button" class="mini" data-fill="' . h($c) . '">' . h($c) . '</button>';
+        }
+        $o .= '</div></div>';
+    }
+    return $o;
+}
+?><!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>施工例の登録 — 庄司石材店</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>施工例の登録</h1>
+    <p class="sub">庄司石材店ホームページ</p>
+    <p class="count">
+      登録済み <b><?= count($items) ?></b> 件
+      <?php foreach ($WORK_CATS as $k => $label): if (empty($counts[$k])) continue; ?>
+        　／　<?= h($label) ?> <b><?= $counts[$k] ?></b>
+      <?php endforeach; ?>
+    </p>
+    <nav class="tabs">
+      <a href="index.php">写真の入れ替え</a>
+      <a class="on" href="works.php">施工例の登録</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<?php if (!is_protected()): ?>
+  <div class="warn">
+    <b>この画面にパスワードがかかっていません。</b>
+    さくらのコントロールパネルの「アクセス制限」で <code>kanri</code> フォルダーに
+    ユーザー名とパスワードを設定してください。設定するまで、URLを知っている人なら誰でも登録・削除できます。
+  </div>
+<?php endif; ?>
+
+<?php if ($flash): ?>
+  <div class="flash <?= h($flash['type']) ?>"><?= h($flash['msg']) ?></div>
+<?php endif; ?>
+
+
+<?php if ($edit): /* ============ 書き換えの画面 ============ */ ?>
+
+  <h2>施工例を書き換える</h2>
+  <div class="panel">
+    <form method="post" enctype="multipart/form-data">
+      <input type="hidden" name="do" value="update">
+      <input type="hidden" name="id" value="<?= h($edit['id']) ?>">
+
+      <div class="row2">
+        <div class="field">
+          <label>分類</label>
+          <select name="cat">
+            <?php foreach ($WORK_CATS as $k => $label): ?>
+              <option value="<?= h($k) ?>"<?= (isset($edit['cat']) && $edit['cat'] === $k) ? ' selected' : '' ?>><?= h($label) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="field">
+          <label>石種</label>
+          <input type="text" name="stone" maxlength="40" value="<?= h(isset($edit['stone']) ? $edit['stone'] : '') ?>" placeholder="例：庵治石">
+          <p class="hint">一覧の見出しになります。空のままでも構いません。</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>一言</label>
+        <textarea name="note" rows="3" maxlength="200" placeholder="例：黒ずみと苔を落とし、文字の色を入れ直しました。"><?= h(isset($edit['note']) ? $edit['note'] : '') ?></textarea>
+      </div>
+
+      <div class="field">
+        <label>いまの写真</label>
+        <div class="shots">
+          <?php foreach (works_photos($edit) as $n => $p): ?>
+            <div class="shot">
+              <div class="box"><img src="../<?= h($p['src']) ?>" alt=""></div>
+              <input type="text" name="pcap[<?= $n ?>]" maxlength="20" value="<?= h($p['cap']) ?>" placeholder="説明" style="margin-top:5px;font-size:12px;padding:5px 7px">
+            </div>
+          <?php endforeach; ?>
+        </div>
+        <p class="hint">説明を直したら、下の「この内容で保存する」を押してください。</p>
+      </div>
+
+      <div class="field">
+        <label>写真を足す</label>
+        <?= photo_rows($WORK_CAPS) ?>
+      </div>
+
+      <button type="submit">この内容で保存する</button>
+    </form>
+
+    <!-- 並べ替えと削除は、書き換えとは別の操作にしてある
+         （入力途中の内容が消えないように） -->
+    <div class="field" style="margin-top:26px;padding-top:20px;border-top:1px solid var(--rule)">
+      <label>写真の順番・削除</label>
+      <div class="shots">
+        <?php $ps = works_photos($edit); foreach ($ps as $n => $p): ?>
+          <div class="shot">
+            <div class="box"><img src="../<?= h($p['src']) ?>" alt=""></div>
+            <div class="cap"><?= $p['cap'] !== '' ? h($p['cap']) : '（説明なし）' ?></div>
+            <div class="tools">
+              <form method="post" style="margin:0">
+                <input type="hidden" name="do" value="photo_move">
+                <input type="hidden" name="id" value="<?= h($edit['id']) ?>">
+                <input type="hidden" name="n" value="<?= $n ?>">
+                <input type="hidden" name="dir" value="up">
+                <button type="submit" class="mini ghost"<?= $n === 0 ? ' disabled' : '' ?>>←</button>
+              </form>
+              <form method="post" style="margin:0">
+                <input type="hidden" name="do" value="photo_move">
+                <input type="hidden" name="id" value="<?= h($edit['id']) ?>">
+                <input type="hidden" name="n" value="<?= $n ?>">
+                <input type="hidden" name="dir" value="down">
+                <button type="submit" class="mini ghost"<?= $n === count($ps) - 1 ? ' disabled' : '' ?>>→</button>
+              </form>
+              <form method="post" style="margin:0" onsubmit="return confirm('この写真を削除します。よろしいですか。')">
+                <input type="hidden" name="do" value="photo_del">
+                <input type="hidden" name="id" value="<?= h($edit['id']) ?>">
+                <input type="hidden" name="n" value="<?= $n ?>">
+                <button type="submit" class="mini danger">削除</button>
+              </form>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+
+    <p style="margin:22px 0 0"><a href="works.php">← 一覧に戻る</a></p>
+  </div>
+
+<?php else: /* ============ 新しく登録する画面 ============ */ ?>
+
+  <h2>新しく登録する</h2>
+  <div class="panel">
+    <form method="post" enctype="multipart/form-data">
+      <input type="hidden" name="do" value="add">
+
+      <div class="row2">
+        <div class="field">
+          <label>分類</label>
+          <select name="cat" required>
+            <?php foreach ($WORK_CATS as $k => $label): ?>
+              <option value="<?= h($k) ?>"><?= h($label) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="field">
+          <label>石種</label>
+          <input type="text" name="stone" maxlength="40" placeholder="例：庵治石">
+          <p class="hint">一覧の見出しになります。空のままでも構いません。</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>一言</label>
+        <textarea name="note" rows="3" maxlength="200" placeholder="例：黒ずみと苔を落とし、文字の色を入れ直しました。"></textarea>
+      </div>
+
+      <?= photo_rows($WORK_CAPS) ?>
+
+      <button type="submit">登録する</button>
+      <p class="hint" style="margin-top:10px">
+        登録すると、その場で施工例の一覧ページと各サービスページに反映されます。
+      </p>
+    </form>
+  </div>
+
+<?php endif; ?>
+
+
+<h2>登録済みの施工例（<?= count($items) ?>件）</h2>
+
+<?php if (!count($items)): ?>
+  <p class="empty">まだ1件も登録されていません。上の欄から登録してください。</p>
+<?php else: ?>
+  <div class="wlist">
+    <?php foreach ($items as $it): $ps = works_photos($it); ?>
+      <div class="witem">
+        <div>
+          <span class="cat"><?= h(isset($WORK_CATS[$it['cat']]) ? $WORK_CATS[$it['cat']] : $it['cat']) ?></span>
+          <div class="head"><?= h(works_heading($it)) ?></div>
+          <?php if (!empty($it['note'])): ?><p class="note"><?= h($it['note']) ?></p><?php endif; ?>
+          <div class="shots">
+            <?php foreach ($ps as $p): ?>
+              <div class="shot" style="width:104px">
+                <div class="box"><img src="../<?= h($p['src']) ?>" alt="" loading="lazy"></div>
+                <?php if ($p['cap'] !== ''): ?><div class="cap"><?= h($p['cap']) ?></div><?php endif; ?>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          <p class="meta" style="margin-top:10px">
+            写真 <?= count($ps) ?>枚　／　登録 <?= h(isset($it['created']) ? $it['created'] : '') ?>
+          </p>
+        </div>
+        <div class="acts">
+          <a class="btnlink" href="works.php?edit=<?= rawurlencode($it['id']) ?>">書き換える</a>
+          <form method="post" style="margin:0" onsubmit="return confirm('この施工例を削除します。写真も一緒に消えます。よろしいですか。')">
+            <input type="hidden" name="do" value="delete">
+            <input type="hidden" name="id" value="<?= h($it['id']) ?>">
+            <button type="submit" class="danger">削除</button>
+          </form>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
+<?php endif; ?>
+
+
+<div class="note">
+  <b>ページを作り直す</b><br>
+  ふだんは登録・書き換えのたびに自動で書き出されるので、押す必要はありません。<br>
+  ホームページのデザインを更新した直後だけ、一度押してください。デザインの更新でページを
+  丸ごと入れ替えると、施工例の部分が古い状態に戻ることがあります。
+  <form method="post" style="margin-top:14px">
+    <input type="hidden" name="do" value="rebuild">
+    <button type="submit" class="ghost">ページを作り直す</button>
+  </form>
+</div>
+
+<footer>
+  <p>
+    写真は自動で回転を直し、幅 <?= MAX_WIDTH ?>px まで縮めてから保存します。<br>
+    枠の形に合わせて表示時に切り取られるので、被写体は中央寄りに、少し引いて撮ってください。<br>
+    お施主様のお名前が写り込んでいないか、登録の前にご確認ください。
+  </p>
+  <p><a href="../works.html">施工例のページを見る →</a></p>
+</footer>
+
+</div>
+
+<script>
+// 「施工前」などのボタンを押したら、すぐ上の入力欄に入れる
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-fill]');
+  if (!b) return;
+  var box = b.closest('.field');
+  var input = box && box.querySelector('input[type=text]');
+  if (input) { input.value = b.dataset.fill; input.focus(); }
+});
+</script>
+
+</body>
+</html>

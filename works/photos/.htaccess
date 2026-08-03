@@ -1,0 +1,23 @@
+# 施工例の写真置き場
+#
+# ここは外から書き込める唯一の場所なので、念のため
+# プログラムとして実行されうるものは一切返さないようにしておく。
+# （kanri 側で中身が画像かどうかを確かめ、GD で作り直してから
+#   .jpg として保存しているので、二重の備え）
+
+Options -Indexes
+
+<FilesMatch "\.(php|phtml|phps|php[0-9]|phar|cgi|pl|py|rb|sh|inc|htaccess|user\.ini)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_mime.c>
+  RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .cgi .pl .py .sh
+  RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phar
+</IfModule>

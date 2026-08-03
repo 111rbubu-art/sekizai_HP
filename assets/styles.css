@@ -921,6 +921,85 @@
   color: var(--ink-soft);
 }
 .wcard figcaption .c { color: var(--stone); white-space: nowrap; }
+.wcard__note {
+  margin: 6px 0 0;
+  font-size: 12.5px; line-height: 1.85; color: var(--stone);
+}
+
+/* 写真が複数枚ある施工例（施工前・施工後など） */
+.wcard__count {
+  position: absolute; left: 0; bottom: 0; z-index: 1;
+  padding: 5px 10px;
+  font-size: 10.5px; letter-spacing: 0.16em; line-height: 1;
+  background: rgba(26, 26, 26, .74); color: var(--bg);
+}
+/* サービスページの施工例は、下に説明の帯があるので上へ逃がす */
+.work .wcard__count { top: 0; bottom: auto; }
+
+/* カード全体を、写真を大きく見るためのボタンにする */
+.wcard, .work { position: relative; }
+.wcard__open {
+  position: absolute; inset: 0; z-index: 2;
+  padding: 0; border: 0; background: transparent;
+  cursor: zoom-in;
+}
+.wcard__open:focus-visible { outline: 1px solid var(--ink); outline-offset: -1px; }
+.work .wcard__open:focus-visible { outline-color: var(--bg); }
+
+/* まだ1件も登録が無い分類では、サービスページの「施工例」を丸ごと隠す。
+   見出しだけが残って寂しく見えるのを避ける。
+   一覧ページ（works.html）は隠さない ― そこは説明が出たほうがよい */
+.works:has(> .works__grid > .wempty) { display: none; }
+
+.wempty {
+  grid-column: 1 / -1;
+  padding: clamp(36px, 6vw, 72px) 20px;
+  text-align: center;
+  font-size: 13.5px; letter-spacing: 0.1em; color: var(--stone);
+  border: 1px solid var(--rule);
+}
+
+/* ---- 写真の拡大表示 ---- */
+body.lb-open { overflow: hidden; }
+.lb { position: fixed; inset: 0; z-index: 200; display: flex; }
+.lb[hidden] { display: none; }
+.lb__back { position: absolute; inset: 0; background: rgba(10, 10, 10, .97); cursor: zoom-out; }
+.lb__inner {
+  position: relative; z-index: 1;
+  cursor: zoom-out;
+  display: flex; flex-direction: column;
+  width: 100%; height: 100%;
+  padding: clamp(48px, 6vw, 72px) clamp(12px, 3vw, 40px) clamp(16px, 3vw, 32px);
+}
+.lb__close {
+  position: absolute; top: 10px; right: 10px;
+  width: 46px; height: 46px;
+  font-size: 24px; line-height: 1;
+  border: 0; background: transparent; color: var(--bg);
+  cursor: pointer; opacity: .7; transition: opacity .25s ease;
+}
+.lb__close:hover { opacity: 1; }
+.lb__stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.lb__img { max-width: 100%; max-height: 100%; object-fit: contain; cursor: default; }
+.lb__bar {
+  cursor: default;
+  display: flex; align-items: center; justify-content: center; gap: clamp(12px, 3vw, 28px);
+  margin-top: 18px;
+}
+.lb__cap {
+  margin: 0; min-width: 0; text-align: center;
+  font-size: 13px; letter-spacing: 0.14em; color: var(--bg);
+}
+.lb__num { display: block; margin-top: 5px; font-family: Georgia, serif; font-size: 11.5px; opacity: .6; }
+.lb__nav {
+  flex: none; width: 46px; height: 46px;
+  font-family: Georgia, serif; font-size: 22px; line-height: 1;
+  border: 1px solid rgba(247, 246, 243, .4); background: transparent; color: var(--bg);
+  cursor: pointer; transition: background .25s ease, color .25s ease;
+}
+.lb__nav:hover { background: var(--bg); color: var(--ink); }
+.lb__nav[disabled] { opacity: .25; pointer-events: none; }
+.lb__nav[hidden] { display: none; }
 
 .wpager {
   display: flex; justify-content: center; align-items: center;

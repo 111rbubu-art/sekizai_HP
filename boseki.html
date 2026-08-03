@@ -311,26 +311,37 @@
     </div>
 
     <div class="works__grid">
+      <!-- ここは kanri/works.php が書き出します。手で編集しても、次の登録で消えます -->
+      <!-- WORKS:START boseki -->
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/boseki-01.jpg" alt="和型墓石の施工例（久我山）" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">和型 / 久我山</span><span class="num">01</span></div>
+        <button class="wcard__open" type="button" aria-label="和型 / 久我山の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/boseki-01.jpg","cap":"","alt":"和型墓石の施工例（久我山）"}]</script>
       </div>
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/boseki-02.jpg" alt="洋型墓石の施工例（杉並）" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">洋型 / 杉並</span><span class="num">02</span></div>
+        <button class="wcard__open" type="button" aria-label="洋型 / 杉並の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/boseki-02.jpg","cap":"","alt":"洋型墓石の施工例（杉並）"}]</script>
       </div>
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/boseki-03.jpg" alt="デザイン墓石の施工例（練馬）" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">デザイン / 練馬</span><span class="num">03</span></div>
+        <button class="wcard__open" type="button" aria-label="デザイン / 練馬の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/boseki-03.jpg","cap":"","alt":"デザイン墓石の施工例（練馬）"}]</script>
       </div>
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/boseki-04.jpg" alt="外柵・墓誌を含む一式施工の例（三鷹）" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">外柵一式 / 三鷹</span><span class="num">04</span></div>
+        <button class="wcard__open" type="button" aria-label="外柵一式 / 三鷹の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/boseki-04.jpg","cap":"","alt":"外柵・墓誌を含む一式施工の例（三鷹）"}]</script>
       </div>
+    <!-- WORKS:END boseki -->
     </div>
   </section>
 
@@ -473,6 +484,8 @@
   })();
 </script>
 
-<!-- v1.11.0 -->
+<script src="assets/works.js" defer></script>
+
+<!-- v1.12.0 -->
 </body>
 </html>

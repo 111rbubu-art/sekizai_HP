@@ -1,0 +1,17 @@
+# 施工例のデータ置き場
+#
+# works.json は施工例の中身そのもの（公開されている情報ではあるが、
+# 直接ダウンロードさせる必要はないので閉じておく）。
+# 写真は photos/ の中にあり、そちらは普通に見える。
+
+Options -Indexes
+
+<FilesMatch "\.(json|tmp|bak)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>

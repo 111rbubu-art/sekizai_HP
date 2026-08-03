@@ -1,0 +1,111 @@
+/* 管理画面（写真の入れ替え／施工例の登録）の共通スタイル */
+
+:root{--bg:#f7f6f3;--soft:#efece5;--ink:#1a1a1a;--stone:#666;--rule:rgba(26,26,26,.14)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.8;letter-spacing:.04em;
+  font-family:system-ui,-apple-system,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;font-size:15px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+header.top{background:#fff;border-bottom:1px solid var(--rule);padding:22px 0}
+h1{margin:0;font-size:20px;letter-spacing:.14em;font-weight:400;
+  font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif}
+.sub{margin:6px 0 0;font-size:12.5px;color:var(--stone);letter-spacing:.06em}
+.count{margin-top:14px;font-size:12.5px;color:var(--stone)}
+.count b{color:var(--ink);font-weight:600}
+
+/* 画面の行き来 */
+.tabs{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.tabs a{font-size:12.5px;letter-spacing:.12em;text-decoration:none;color:var(--stone);
+  border:1px solid var(--rule);padding:8px 15px;background:#fff}
+.tabs a.on{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+
+.flash{margin:20px 0 0;padding:16px 20px;border:1px solid var(--ink);background:#fff;font-size:14px}
+.flash.ng{border-color:#9c4128;background:#f7ece8;color:#7d3320}
+.warn{margin:20px 0 0;padding:18px 20px;border:1px solid #9c4128;background:#f7ece8;color:#7d3320;font-size:14px}
+.warn b{display:block;margin-bottom:6px}
+.note{margin:20px 0 0;padding:16px 20px;border:1px solid var(--rule);background:#fff;font-size:13px;color:var(--stone)}
+
+h2{margin:44px 0 4px;font-size:16px;letter-spacing:.12em;font-weight:400;
+  font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
+  padding-bottom:10px;border-bottom:1px solid var(--rule)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:20px}
+.card{background:#fff;border:1px solid var(--rule);display:flex;flex-direction:column}
+.thumb{position:relative;aspect-ratio:4/3;background:var(--soft);overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:contain;display:block}
+.tag{position:absolute;top:8px;left:8px;font-size:10px;letter-spacing:.16em;padding:3px 8px;
+  background:rgba(26,26,26,.72);color:#f7f6f3}
+.tag.ok{background:rgba(40,90,60,.82)}
+.body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1}
+.name{font-size:12.5px;letter-spacing:.02em;word-break:break-all}
+.meta{font-size:11.5px;color:var(--stone);line-height:1.7}
+.alt{font-size:12px;color:var(--stone);border-left:2px solid var(--rule);padding-left:9px}
+
+form{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+input[type=file]{font:inherit;font-size:12.5px;width:100%}
+input[type=text],select,textarea{font:inherit;font-size:14px;width:100%;padding:9px 11px;
+  border:1px solid var(--rule);background:#fff;color:var(--ink)}
+textarea{line-height:1.75;resize:vertical}
+input[type=text]:focus,select:focus,textarea:focus{outline:1px solid var(--ink);outline-offset:-1px}
+label{display:block;font-size:12px;letter-spacing:.1em;color:var(--stone);margin-bottom:5px}
+
+button{font:inherit;font-size:13px;letter-spacing:.14em;padding:11px 16px;border:1px solid var(--ink);
+  background:var(--ink);color:var(--bg);cursor:pointer;transition:background .25s,color .25s}
+button:hover{background:transparent;color:var(--ink)}
+button[disabled]{opacity:.35;cursor:default}
+button.ghost{background:transparent;color:var(--ink)}
+button.ghost:hover{background:var(--ink);color:var(--bg)}
+button.danger{background:transparent;color:#9c4128;border-color:#9c4128}
+button.danger:hover{background:#9c4128;color:#fff}
+button.mini{font-size:11px;letter-spacing:.08em;padding:5px 9px;line-height:1.2}
+/* ボタンに見えるリンク（<a> の中に <button> は置けないため） */
+.btnlink{display:inline-block;font-size:13px;letter-spacing:.14em;padding:11px 16px;
+  border:1px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;
+  transition:background .25s,color .25s;white-space:nowrap}
+.btnlink:hover{background:var(--ink);color:var(--bg)}
+
+footer{margin:60px 0 40px;padding-top:24px;border-top:1px solid var(--rule);font-size:12px;color:var(--stone)}
+footer a{color:inherit}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+
+/* ============================================================
+ * 施工例の登録だけで使うもの
+ * ========================================================== */
+
+.panel{background:#fff;border:1px solid var(--rule);padding:clamp(18px,3vw,28px);margin-top:20px}
+.panel h3{margin:0 0 16px;font-size:14px;letter-spacing:.12em;font-weight:400;
+  font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif}
+.panel form{margin-top:0}
+
+.field{margin-bottom:18px}
+.field .hint{margin:6px 0 0;font-size:11.5px;color:var(--stone);line-height:1.7}
+.row2{display:grid;grid-template-columns:200px 1fr;gap:18px}
+@media(max-width:600px){.row2{grid-template-columns:1fr}}
+
+.caps{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.caps button{font-size:11px;letter-spacing:.06em;padding:4px 10px;background:transparent;color:var(--stone);
+  border:1px solid var(--rule)}
+.caps button:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* 登録済みの施工例 */
+.wlist{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+.witem{background:#fff;border:1px solid var(--rule);padding:16px 18px;
+  display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start}
+@media(max-width:700px){.witem{grid-template-columns:1fr}}
+.witem .cat{display:inline-block;font-size:10.5px;letter-spacing:.16em;padding:3px 9px;
+  background:var(--ink);color:var(--bg);margin-bottom:8px}
+.witem .head{font-size:15px;letter-spacing:.06em;
+  font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif}
+.witem .note{margin:6px 0 0;font-size:13px;color:var(--stone);line-height:1.8}
+.witem .acts{display:flex;gap:8px;align-items:center}
+
+.shots{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.shot{width:132px}
+.shot .box{position:relative;aspect-ratio:4/3;background:var(--soft);overflow:hidden;border:1px solid var(--rule)}
+.shot .box img{width:100%;height:100%;object-fit:cover;display:block}
+.shot .cap{margin-top:5px;font-size:11px;color:var(--stone);text-align:center;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shot .tools{display:flex;gap:4px;margin-top:5px;justify-content:center}
+
+.empty{margin-top:20px;padding:28px 20px;border:1px dashed var(--rule);text-align:center;
+  font-size:13px;color:var(--stone)}

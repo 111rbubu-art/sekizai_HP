@@ -195,26 +195,37 @@
     </div>
 
     <div class="works__grid">
+      <!-- ここは kanri/works.php が書き出します。手で編集しても、次の登録で消えます -->
+      <!-- WORKS:START reform -->
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/reform-01.jpg" alt="花立金具を交換した施工例" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">花立金具 / 三鷹</span><span class="num">01</span></div>
+        <button class="wcard__open" type="button" aria-label="花立金具 / 三鷹の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/reform-01.jpg","cap":"","alt":"花立金具を交換した施工例"}]</script>
       </div>
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/reform-02.jpg" alt="香炉を交換した施工例" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">香炉の交換 / 久我山</span><span class="num">02</span></div>
+        <button class="wcard__open" type="button" aria-label="香炉の交換 / 久我山の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/reform-02.jpg","cap":"","alt":"香炉を交換した施工例"}]</script>
       </div>
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/reform-03.jpg" alt="土留を交換して据え直した施工例" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">土留の交換 / 杉並</span><span class="num">03</span></div>
+        <button class="wcard__open" type="button" aria-label="土留の交換 / 杉並の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/reform-03.jpg","cap":"","alt":"土留を交換して据え直した施工例"}]</script>
       </div>
       <div class="work">
         <div class="work__placeholder" aria-hidden="true"></div>
         <img class="work__img" src="images/works/reform-04.jpg" alt="傾いたお墓を据え直した施工例" loading="lazy" onerror="this.style.display='none'" />
         <div class="work__caption"><span class="mincho">全体の据え直し / 練馬</span><span class="num">04</span></div>
+        <button class="wcard__open" type="button" aria-label="全体の据え直し / 練馬の写真を大きく見る"></button>
+        <script type="application/json" class="wcard__data">[{"src":"images/works/reform-04.jpg","cap":"","alt":"傾いたお墓を据え直した施工例"}]</script>
       </div>
+    <!-- WORKS:END reform -->
     </div>
   </section>
 
@@ -317,6 +328,8 @@
   })();
 </script>
 
-<!-- v1.6.0 -->
+<script src="assets/works.js" defer></script>
+
+<!-- v1.7.0 -->
 </body>
 </html>
