@@ -50,6 +50,8 @@ foreach ($slots as $rel => $s) {
     <nav class="tabs">
       <a class="on" href="index.php">写真の入れ替え</a>
       <a href="works.php">施工例の登録</a>
+      <a class="go" href="../index.html" target="_blank" rel="noopener">サイトを見る ↗</a>
+      <a class="go" href="../works.html" target="_blank" rel="noopener">施工例のページ ↗</a>
     </nav>
   </div>
 </header>

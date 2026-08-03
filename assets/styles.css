@@ -766,6 +766,18 @@
     color: rgba(247,246,243,0.4);
   }
 
+  /* 関係者用の入口。お客様の邪魔をしないよう、うんと控えめにしておく。
+     押すと kanri/works.php へ行き、さくらのパスワードを聞かれる。
+     robots.txt で /kanri/ は検索よけ済み。rel="nofollow" も付けてある */
+  .footer__admin {
+    margin-left: 22px;
+    padding-bottom: 2px;
+    color: rgba(247,246,243,0.26);
+    border-bottom: 1px solid rgba(247,246,243,0.14);
+    transition: color .3s ease, border-color .3s ease;
+  }
+  .footer__admin:hover { color: rgba(247,246,243,0.7); border-color: rgba(247,246,243,0.4); }
+
   /* ---------- Reveal animation ---------- */
   .reveal { opacity: 0; transform: translateY(14px); transition: opacity .8s ease, transform .8s ease; }
   .reveal.is-in { opacity: 1; transform: none; }

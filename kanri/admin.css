@@ -17,6 +17,10 @@ h1{margin:0;font-size:20px;letter-spacing:.14em;font-weight:400;
 .tabs a{font-size:12.5px;letter-spacing:.12em;text-decoration:none;color:var(--stone);
   border:1px solid var(--rule);padding:8px 15px;background:#fff}
 .tabs a.on{color:var(--bg);background:var(--ink);border-color:var(--ink)}
+/* サイト側を見に行くリンク。編集画面とは別ものなので、枠を消して区別する */
+.tabs a.go{border-color:transparent;background:transparent;padding-left:6px;padding-right:6px}
+.tabs a.go:hover{color:var(--ink);border-color:var(--rule)}
+.tabs .go:first-of-type{margin-left:10px}
 
 .flash{margin:20px 0 0;padding:16px 20px;border:1px solid var(--ink);background:#fff;font-size:14px}
 .flash.ng{border-color:#9c4128;background:#f7ece8;color:#7d3320}
