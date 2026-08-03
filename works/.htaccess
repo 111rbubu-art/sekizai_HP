@@ -1,12 +1,16 @@
 # 施工例のデータ置き場
 #
-# works.json は施工例の中身そのもの（公開されている情報ではあるが、
-# 直接ダウンロードさせる必要はないので閉じておく）。
+# works.json.php は施工例の中身そのもの。管理用メモには
+# お施主様のお名前や施工日が入るので、外からは一切見せない。
+#
+# 中身の先頭には <?php exit; ?> が入れてあるので、この .htaccess が
+# 効かない環境でも、PHP として実行されて何も出力されない。二重の備え。
+#
 # 写真は photos/ の中にあり、そちらは普通に見える。
 
 Options -Indexes
 
-<FilesMatch "\.(json|tmp|bak)$">
+<FilesMatch "\.(json|php|phtml|tmp|bak)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>

@@ -1,3 +1,4 @@
+<?php exit; ?>
 {
     "version": 1,
     "items": [

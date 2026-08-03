@@ -36,6 +36,20 @@ function clean_text($s, $max)
     return $s;
 }
 
+/**
+ * 管理用メモ用。clean_text と違って改行は残す
+ * （お名前・施工日・現場のことを行ごとに書けるように）
+ */
+function clean_memo($s, $max)
+{
+    $s = isset($s) ? (string)$s : '';
+    $s = str_replace(array("\r\n", "\r"), "\n", $s);
+    $s = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $s);
+    $s = trim($s);
+    if (mb_strlen($s, 'UTF-8') > $max) $s = mb_substr($s, 0, $max, 'UTF-8');
+    return $s;
+}
+
 /** 書き出した結果を、そのまま従業員に見せる文にする */
 function rebuild_message($items)
 {
@@ -102,6 +116,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cat'     => $cat,
             'stone'   => clean_text(isset($_POST['stone']) ? $_POST['stone'] : '', 40),
             'note'    => clean_text(isset($_POST['note']) ? $_POST['note'] : '', 200),
+            // 管理用メモ。ホームページには一切出さない（works_lib.php の
+            // 書き出しは cat / stone / note / photos しか見ていない）
+            'memo'    => clean_memo(isset($_POST['memo']) ? $_POST['memo'] : '', 400),
             'photos'  => $photos,
             'created' => date('Y-m-d H:i:s'),
         );
@@ -123,6 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($WORK_CATS[$cat])) $it['cat'] = $cat;
         $it['stone'] = clean_text(isset($_POST['stone']) ? $_POST['stone'] : '', 40);
         $it['note']  = clean_text(isset($_POST['note']) ? $_POST['note'] : '', 200);
+        $it['memo']  = clean_memo(isset($_POST['memo']) ? $_POST['memo'] : '', 400);
 
         // いまある写真の説明を書き換える
         $ps = works_photos($it);
@@ -328,6 +346,12 @@ function photo_rows($caps)
         <textarea name="note" rows="3" maxlength="200" placeholder="例：黒ずみと苔を落とし、文字の色を入れ直しました。"><?= h(isset($edit['note']) ? $edit['note'] : '') ?></textarea>
       </div>
 
+      <div class="field field--memo">
+        <label>管理用メモ　<span class="off">サイトには出ません</span></label>
+        <textarea name="memo" rows="4" maxlength="400" placeholder="例：山田様&#10;2026年7月20日施工&#10;○○霊園 3区12番"><?= h(isset($edit['memo']) ? $edit['memo'] : '') ?></textarea>
+        <p class="hint">お施主様のお名前、施工日、霊園名など。<b>ホームページには表示されません。</b>この画面でだけ見えます。</p>
+      </div>
+
       <div class="field">
         <label>いまの写真</label>
         <div class="shots">
@@ -416,6 +440,12 @@ function photo_rows($caps)
         <textarea name="note" rows="3" maxlength="200" placeholder="例：黒ずみと苔を落とし、文字の色を入れ直しました。"></textarea>
       </div>
 
+      <div class="field field--memo">
+        <label>管理用メモ　<span class="off">サイトには出ません</span></label>
+        <textarea name="memo" rows="4" maxlength="400" placeholder="例：山田様&#10;2026年7月20日施工&#10;○○霊園 3区12番"></textarea>
+        <p class="hint">お施主様のお名前、施工日、霊園名など。<b>ホームページには表示されません。</b>この画面でだけ見えます。</p>
+      </div>
+
       <?= photo_rows($WORK_CAPS) ?>
 
       <button type="submit">登録する</button>
@@ -440,6 +470,9 @@ function photo_rows($caps)
           <span class="cat"><?= h(isset($WORK_CATS[$it['cat']]) ? $WORK_CATS[$it['cat']] : $it['cat']) ?></span>
           <div class="head"><?= h(works_heading($it)) ?></div>
           <?php if (!empty($it['note'])): ?><p class="note"><?= h($it['note']) ?></p><?php endif; ?>
+          <?php if (!empty($it['memo'])): ?>
+            <div class="memo"><span class="off">管理用メモ</span><?= nl2br(h($it['memo'])) ?></div>
+          <?php endif; ?>
           <div class="shots">
             <?php foreach ($ps as $p): ?>
               <div class="shot" style="width:104px">

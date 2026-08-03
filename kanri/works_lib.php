@@ -17,8 +17,19 @@
 require_once __DIR__ . '/lib.php';
 
 define('WORKS_DIR',   SITE_DIR . '/works');
-define('WORKS_JSON',  WORKS_DIR . '/works.json');
 define('WORKS_PHOTO', WORKS_DIR . '/photos');
+
+/*
+ * データの入れ物は works.json.php という名前にしてある。
+ *
+ * 中身は JSON だが、先頭に <?php exit; ?> を1行だけ置いてある。
+ * こうしておくと、万一 works/.htaccess が無くなっても、URLを直に叩かれた
+ * ときに PHP として実行されて何も出力されない。
+ * 管理用メモにはお施主様のお名前が入りうるので、二重に守っておく。
+ */
+define('WORKS_JSON',     WORKS_DIR . '/works.json.php');
+define('WORKS_JSON_OLD', WORKS_DIR . '/works.json');    // 旧い置き場。読み込みだけ
+define('WORKS_GUARD',    "<?php exit; ?>\n");
 
 define('WORKS_PER_PAGE', 24);      // works.html の1ページあたりの件数
 define('WORKS_ON_SERVICE', 4);     // 各サービスページに出す件数
@@ -49,12 +60,23 @@ $WORK_CAPS = array('施工前', '施工後', '全体', '棹石', '外柵', '文�
  * データの読み書き
  * ========================================================== */
 
-/** works.json を読む。無ければ空で返す */
+/** 施工例を読む。無ければ空で返す */
 function works_load()
 {
-    if (!is_file(WORKS_JSON)) return array();
-    $raw = file_get_contents(WORKS_JSON);
+    $path = is_file(WORKS_JSON) ? WORKS_JSON : WORKS_JSON_OLD;   // 旧い置き場からも読める
+    if (!is_file($path)) return array();
+
+    $raw = file_get_contents($path);
     if ($raw === false || $raw === '') return array();
+
+    /* 先頭の PHP タグ（<?php exit; ?>）を読み飛ばす。
+       旧い置き場のものには付いていないので、最初の { から読む。
+       ※ この注記は行コメントにしないこと。行コメントの中の閉じタグは
+          PHP タグを本当に閉じてしまい、ファイル全体が壊れる */
+    $at = strpos($raw, '{');
+    if ($at === false) return array();
+    $raw = substr($raw, $at);
+
     $data = json_decode($raw, true);
     if (!is_array($data) || !isset($data['items']) || !is_array($data['items'])) return array();
     return $data['items'];
@@ -89,10 +111,13 @@ function works_save(&$items)
     );
     if ($json === false) return false;
 
-    $tmp = WORKS_JSON . '.tmp';
-    if (@file_put_contents($tmp, $json, LOCK_EX) === false) return false;
+    $tmp = WORKS_DIR . '/works.tmp';
+    if (@file_put_contents($tmp, WORKS_GUARD . $json, LOCK_EX) === false) return false;
     if (!@rename($tmp, WORKS_JSON)) { @unlink($tmp); return false; }
     @chmod(WORKS_JSON, 0644);
+
+    // 旧い置き場が残っていたら、書き移せたので消しておく
+    if (is_file(WORKS_JSON_OLD)) @unlink(WORKS_JSON_OLD);
     return true;
 }
 

@@ -82,6 +82,16 @@ footer a{color:inherit}
 .row2{display:grid;grid-template-columns:200px 1fr;gap:18px}
 @media(max-width:600px){.row2{grid-template-columns:1fr}}
 
+/* 管理用メモ — 公開される欄と見た目で区別する */
+.off{display:inline-block;font-size:10px;letter-spacing:.14em;padding:2px 7px;
+  background:var(--soft);color:var(--stone);border:1px solid var(--rule);vertical-align:2px}
+.field--memo{padding:14px 16px;background:var(--soft);border:1px dashed var(--rule)}
+.field--memo textarea{background:#fff}
+.field--memo .hint b{color:var(--ink)}
+.witem .memo{margin:10px 0 0;padding:9px 12px;background:var(--soft);border:1px dashed var(--rule);
+  font-size:12.5px;line-height:1.8;color:var(--stone);white-space:normal}
+.witem .memo .off{margin-right:10px}
+
 .caps{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
 .caps button{font-size:11px;letter-spacing:.06em;padding:4px 10px;background:transparent;color:var(--stone);
   border:1px solid var(--rule)}
