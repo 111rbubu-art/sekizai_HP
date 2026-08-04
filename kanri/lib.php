@@ -15,6 +15,24 @@ define('BACKUP_DIR', __DIR__ . '/_backup');
 define('MAX_WIDTH', 1600);                        // 保存時の最大の幅
 define('JPEG_QUALITY', 82);
 
+/*
+ * 保存するときの大きさの選び方
+ *
+ * 幅を詰めるだけでなく、目標の容量に収まるまで圧縮を強める。
+ * 写真によって「同じ画質でも容量が全然ちがう」ため、
+ * 画質を決め打ちにすると重い写真が重いまま残ってしまう。
+ *
+ *   w   … これより横幅が大きければ縮める
+ *   max … この容量に収まるまで画質を落とす（0 なら容量は見ない）
+ */
+$SAVE_PRESETS = array(
+    'large'  => array('label' => '大きく（幅2000px・600KBまで）',  'w' => 2000, 'max' => 600 * 1024),
+    'normal' => array('label' => 'ふつう（幅1600px・300KBまで）',  'w' => 1600, 'max' => 300 * 1024),
+    'small'  => array('label' => '小さく（幅1200px・150KBまで）',  'w' => 1200, 'max' => 150 * 1024),
+    'tiny'   => array('label' => 'とても小さく（幅900px・80KBまで）', 'w' => 900,  'max' => 80 * 1024),
+);
+define('SAVE_PRESET_DEFAULT', 'normal');
+
 // ページの並び順と表示名（ここに無いページは末尾に回る）
 $PAGE_LABELS = array(
     'index.html'     => 'トップ',
@@ -163,6 +181,39 @@ function apply_orientation($im, $path)
         case 8: return imagerotate($im, 90, 0);
     }
     return $im;
+}
+
+/**
+ * 目標の容量に収まるまで画質を下げながら JPEG で保存する。
+ * 戻り値: array('bytes' => 保存後の容量, 'q' => 使った画質) / 失敗なら null
+ */
+function save_jpeg_within($im, $path, $maxBytes)
+{
+    $w = imagesx($im);
+    $h = imagesy($im);
+
+    // 透過部分は白で埋めてから JPEG にする
+    $flat = imagecreatetruecolor($w, $h);
+    imagefill($flat, 0, 0, imagecolorallocate($flat, 255, 255, 255));
+    imagecopy($flat, $im, 0, 0, 0, 0, $w, $h);
+
+    $best = null;
+    // 高い画質から順に試し、目標に収まった時点で止める。
+    // 40 より下げると見て分かるほど荒れるので、そこで打ち切る
+    foreach (array(86, 82, 76, 70, 64, 58, 52, 46, 40) as $q) {
+        ob_start();
+        $ok = imagejpeg($flat, null, $q);
+        $data = ob_get_clean();
+        if (!$ok || $data === false) continue;
+
+        $best = array('data' => $data, 'bytes' => strlen($data), 'q' => $q);
+        if ($maxBytes <= 0 || strlen($data) <= $maxBytes) break;
+    }
+    imagedestroy($flat);
+
+    if ($best === null) return null;
+    if (@file_put_contents($path, $best['data']) === false) return null;
+    return array('bytes' => $best['bytes'], 'q' => $best['q']);
 }
 
 function human_bytes($n)

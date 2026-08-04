@@ -11,8 +11,17 @@ require __DIR__ . '/library.php';
 
 session_start();
 
-function back($type, $msg)
+$AJAX = !empty($_POST['ajax']);
+
+function back($type, $msg, $extra = array())
 {
+    global $AJAX;
+    if ($AJAX) {
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode(array_merge(array('ok' => $type === 'ok', 'msg' => $msg), $extra),
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    }
     $_SESSION['flash'] = array('type' => $type, 'msg' => $msg);
     header('Location: index.php');
     exit;
@@ -29,6 +38,13 @@ if (!count($_POST) && !count($_FILES) && !empty($_SERVER['CONTENT_LENGTH'])) {
 $slot = isset($_POST['slot']) ? $_POST['slot'] : '';
 $slots = collect_slots();
 if (!isset($slots[$slot])) back('ng', 'その置き場所は見つかりませんでした。');
+
+// 保存する大きさ（選ばれていなければ「ふつう」）
+$sizeKey = isset($_POST['size']) ? $_POST['size'] : '';
+if (!isset($SAVE_PRESETS[$sizeKey])) $sizeKey = SAVE_PRESET_DEFAULT;
+$preset = $SAVE_PRESETS[$sizeKey];
+
+$wasBytes = is_file(SITE_DIR . '/' . $slot) ? filesize(SITE_DIR . '/' . $slot) : 0;
 
 /*
  * 写真の出どころは2通り。
@@ -47,14 +63,17 @@ if (!$hasUpload && $from !== '') {
     }
 } elseif (!$hasUpload) {
     $e = isset($_FILES['photo']) ? $_FILES['photo']['error'] : -1;
+    $big = '写真が大きすぎます（1枚あたりの上限 ' . ini_get('upload_max_filesize') . '）。'
+         . 'PNG は同じ写真でも JPEG の3〜8倍の容量になります。'
+         . 'JPEG で保存し直すか、kanri/.user.ini で上限を上げてください。';
     $msg = array(
-        UPLOAD_ERR_INI_SIZE  => '写真が大きすぎます（サーバー上限 ' . ini_get('upload_max_filesize') . '）',
-        UPLOAD_ERR_FORM_SIZE => '写真が大きすぎます',
-        UPLOAD_ERR_PARTIAL   => '通信が途中で切れました。もう一度お試しください',
+        UPLOAD_ERR_INI_SIZE  => $big,
+        UPLOAD_ERR_FORM_SIZE => $big,
+        UPLOAD_ERR_PARTIAL   => '通信が途中で切れました。もう一度お試しください。',
         UPLOAD_ERR_NO_FILE   => '写真が選ばれていません。手元のファイルを選ぶか、'
-                              . '「サーバーの写真から選ぶ」をお使いください',
+                              . '「サーバーの写真から選ぶ」をお使いください。',
     );
-    back('ng', isset($msg[$e]) ? $msg[$e] : 'アップロードに失敗しました（コード ' . $e . '）');
+    back('ng', isset($msg[$e]) ? $msg[$e] : 'アップロードに失敗しました（コード ' . $e . '）。');
 } else {
     $tmp = $_FILES['photo']['tmp_name'];
 }
@@ -75,13 +94,14 @@ if ($type === IMAGETYPE_JPEG) $im = apply_orientation($im, $tmp);
 // 幅を詰める
 $w = imagesx($im);
 $h = imagesy($im);
-if ($w > MAX_WIDTH) {
-    $nh = (int)round($h * MAX_WIDTH / $w);
-    $dst = imagecreatetruecolor(MAX_WIDTH, $nh);
-    imagecopyresampled($dst, $im, 0, 0, 0, 0, MAX_WIDTH, $nh, $w, $h);
+$maxW = $preset['w'];
+if ($w > $maxW) {
+    $nh = (int)round($h * $maxW / $w);
+    $dst = imagecreatetruecolor($maxW, $nh);
+    imagecopyresampled($dst, $im, 0, 0, 0, 0, $maxW, $nh, $w, $h);
     imagedestroy($im);
     $im = $dst;
-    $w = MAX_WIDTH;
+    $w = $maxW;
     $h = $nh;
 }
 
@@ -102,25 +122,42 @@ if (is_file($target)) {
 
 // 枠の拡張子に合わせて保存する
 $ext = strtolower(pathinfo($slot, PATHINFO_EXTENSION));
-$saved = false;
+$res = null;
 if ($ext === 'png') {
-    $saved = imagepng($im, $target, 6);
+    $res = imagepng($im, $target, 6) ? array('bytes' => filesize($target), 'q' => 0) : null;
 } elseif ($ext === 'webp' && function_exists('imagewebp')) {
-    $saved = imagewebp($im, $target, JPEG_QUALITY);
+    $res = imagewebp($im, $target, JPEG_QUALITY) ? array('bytes' => filesize($target), 'q' => JPEG_QUALITY) : null;
 } else {
-    // 透過部分は白で埋めてからJPEGにする
-    $flat = imagecreatetruecolor($w, $h);
-    imagefill($flat, 0, 0, imagecolorallocate($flat, 255, 255, 255));
-    imagecopy($flat, $im, 0, 0, 0, 0, $w, $h);
-    $saved = imagejpeg($flat, $target, JPEG_QUALITY);
-    imagedestroy($flat);
+    // 目標の容量に収まるまで、画質を段々に下げながら試す
+    $res = save_jpeg_within($im, $target, $preset['max']);
 }
 imagedestroy($im);
 
-if (!$saved) back('ng', '保存できませんでした。もう一度お試しください。');
+if ($res === null) back('ng', '保存できませんでした。もう一度お試しください。');
 @chmod($target, 0644);
+clearstatcache(true, $target);
 
-back('ok', basename($slot) . ' を'
+$msg = basename($slot) . ' を'
     . ($from !== '' && !$hasUpload ? 'サーバーの ' . basename($from) . ' に' : '')
-    . '差し替えました（' . $w . '×' . $h . '）。'
-    . 'サイトを再読み込みしてご確認ください。');
+    . '差し替えました。'
+    . $w . '×' . $h . '／' . human_bytes($res['bytes'])
+    . ($wasBytes ? '（前は ' . human_bytes($wasBytes) . '）' : '');
+
+// 目標に届かなかったときは、そのことも伝える
+if ($ext === 'jpg' || $ext === 'jpeg') {
+    if ($preset['max'] > 0 && $res['bytes'] > $preset['max']) {
+        $msg .= ' ※ 画質をこれ以上落とすと荒れるため、'
+              . human_bytes($preset['max']) . 'には収まりませんでした。'
+              . 'もっと小さくしたい場合は、ひとつ下の大きさをお選びください。';
+    }
+}
+
+$info = slot_info($slot);
+back('ok', $msg, array(
+    'w'     => $w,
+    'h'     => $h,
+    'bytes' => $res['bytes'],
+    'human' => human_bytes($res['bytes']),
+    'mtime' => $info ? $info['mtime'] : time(),
+    'ph'    => $info ? $info['placeholder'] : false,
+));
