@@ -121,6 +121,18 @@ function works_save(&$items)
     return true;
 }
 
+/** 公開する設定になっているか（設定が無いものは公開とみなす） */
+function works_is_public($it)
+{
+    return !isset($it['pub']) || $it['pub'] ? true : false;
+}
+
+/** ホームページに出す分だけを取り出す */
+function works_public($items)
+{
+    return array_values(array_filter($items, 'works_is_public'));
+}
+
 /** 施工例をひとつ取り出す */
 function works_find($items, $id)
 {
@@ -225,7 +237,14 @@ function works_card_html($it)
     $ps    = works_photos($it);
     $first = count($ps) ? $ps[0] : null;
 
-    $o  = '        <figure class="wcard" data-cat="' . h($cat) . '">' . "\n";
+    // 見出しには石種だけを入れる。一言は必ず自分の行に出す。
+    // （見出しが空のときに一言で埋めていたので、一言がどこに出るのか
+    //   分かりにくくなっていた）
+    $stone = isset($it['stone']) ? trim($it['stone']) : '';
+
+    $o  = '        <figure class="wcard" data-cat="' . h($cat) . '"';
+    if ($note !== '') $o .= ' data-note="' . h($note) . '"';
+    $o .= '>' . "\n";
     $o .= '          <div class="wcard__media">' . "\n";
     $o .= '            <div class="work__placeholder" aria-hidden="true"></div>' . "\n";
     if ($first) {
@@ -236,8 +255,8 @@ function works_card_html($it)
         $o .= '            <span class="wcard__count">' . count($ps) . '枚</span>' . "\n";
     }
     $o .= '          </div>' . "\n";
-    $o .= '          <figcaption><span>' . h($head) . '</span><span class="c">' . h($label) . '</span></figcaption>' . "\n";
-    if ($note !== '' && $note !== $head) {
+    $o .= '          <figcaption><span>' . h($stone) . '</span><span class="c">' . h($label) . '</span></figcaption>' . "\n";
+    if ($note !== '') {
         $o .= '          <p class="wcard__note">' . h($note) . '</p>' . "\n";
     }
     if (count($ps)) {
@@ -255,7 +274,11 @@ function works_item_html($it, $num)
     $ps   = works_photos($it);
     $first = count($ps) ? $ps[0] : null;
 
-    $o  = '      <div class="work">' . "\n";
+    $note = isset($it['note']) ? trim($it['note']) : '';
+
+    $o  = '      <div class="work"';
+    if ($note !== '') $o .= ' data-note="' . h($note) . '"';
+    $o .= '>' . "\n";
     $o .= '        <div class="work__placeholder" aria-hidden="true"></div>' . "\n";
     if ($first) {
         $o .= '        <img class="work__img" src="' . h($first['src']) . '" alt="' . h(works_alt($it, $first, 0))
@@ -333,6 +356,9 @@ function works_regenerate($items)
 
     $ok = array();
     $ng = array();
+
+    // 非公開にしてあるものは、ここから先へ渡さない
+    $items = works_public($items);
 
     // --- 施工例の一覧ページ ---
     $cards = '';

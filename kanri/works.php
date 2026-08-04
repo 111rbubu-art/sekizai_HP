@@ -119,14 +119,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 管理用メモ。ホームページには一切出さない（works_lib.php の
             // 書き出しは cat / stone / note / photos しか見ていない）
             'memo'    => clean_memo(isset($_POST['memo']) ? $_POST['memo'] : '', 400),
+            'pub'     => !empty($_POST['pub']),
             'photos'  => $photos,
             'created' => date('Y-m-d H:i:s'),
         );
 
         if (!works_save($items)) { flash('ng', '登録できませんでした。works フォルダーの権限をご確認ください。'); go(); }
         list($t, $m) = rebuild_message($items);
+        $state = empty($_POST['pub'])
+            ? '非公開で登録しました（ホームページにはまだ出ていません）。'
+            : '施工例を登録し、公開しました。';
         flash($t === 'ok' ? 'ok' : 'ng',
-            '施工例を登録しました（写真 ' . count($photos) . '枚）。' . $m . (count($errs) ? ' ※ ' . implode(' / ', $errs) : ''));
+            $state . '写真 ' . count($photos) . '枚。' . $m . (count($errs) ? ' ※ ' . implode(' / ', $errs) : ''));
         go();
     }
 
@@ -141,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $it['stone'] = clean_text(isset($_POST['stone']) ? $_POST['stone'] : '', 40);
         $it['note']  = clean_text(isset($_POST['note']) ? $_POST['note'] : '', 200);
         $it['memo']  = clean_memo(isset($_POST['memo']) ? $_POST['memo'] : '', 400);
+        $it['pub']   = !empty($_POST['pub']);
 
         // いまある写真の説明を書き換える
         $ps = works_photos($it);
@@ -213,6 +218,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         go('works.php?edit=' . rawurlencode($id));
     }
 
+    /* --- 公開と非公開を切り替える --- */
+    if ($do === 'toggle') {
+        $id = isset($_POST['id']) ? $_POST['id'] : '';
+        list($idx, $it) = works_find($items, $id);
+        if ($idx < 0) { flash('ng', 'その施工例は見つかりませんでした。'); go(); }
+
+        $it['pub'] = !works_is_public($it);
+        $items[$idx] = $it;
+
+        if (!works_save($items)) { flash('ng', '切り替えできませんでした。'); go(); }
+        list($t, $m) = rebuild_message($items);
+        flash($t === 'ok' ? 'ok' : 'ng',
+            ($it['pub'] ? 'ホームページに掲載しました。' : 'ホームページから外しました。データは残っています。') . $m);
+        go();
+    }
+
     /* --- 施工例ごと消す --- */
     if ($do === 'delete') {
         $id = isset($_POST['id']) ? $_POST['id'] : '';
@@ -252,9 +273,11 @@ $editId = isset($_GET['edit']) ? $_GET['edit'] : '';
 list($editIdx, $edit) = $editId !== '' ? works_find($items, $editId) : array(-1, null);
 
 $counts = array();
+$pubCount = 0;
 foreach ($items as $it) {
     $c = isset($it['cat']) ? $it['cat'] : '';
     $counts[$c] = (isset($counts[$c]) ? $counts[$c] : 0) + 1;
+    if (works_is_public($it)) $pubCount++;
 }
 
 /** 写真の欄（新規・追加で共通） */
@@ -290,10 +313,8 @@ function photo_rows($caps)
     <h1>施工例の登録</h1>
     <p class="sub">庄司石材店ホームページ</p>
     <p class="count">
-      登録済み <b><?= count($items) ?></b> 件
-      <?php foreach ($WORK_CATS as $k => $label): if (empty($counts[$k])) continue; ?>
-        　／　<?= h($label) ?> <b><?= $counts[$k] ?></b>
-      <?php endforeach; ?>
+      登録済み <b><?= count($items) ?></b> 件　／　
+      ホームページに掲載中 <b><?= $pubCount ?></b>　非公開 <b><?= count($items) - $pubCount ?></b>
     </p>
     <nav class="tabs">
       <a href="index.php">写真の入れ替え</a>
@@ -339,15 +360,25 @@ function photo_rows($caps)
         <div class="field">
           <label>石種</label>
           <input type="text" name="stone" maxlength="40" value="<?= h(isset($edit['stone']) ? $edit['stone'] : '') ?>" placeholder="例：庵治石">
-          <p class="hint">一覧の見出しになります。空のままでも構いません。</p>
+          <p class="hint"><b>施工例の一覧</b>で、写真のすぐ下に出ます。空のままでも構いません。</p>
         </div>
       </div>
 
       <div class="field">
         <label>一言</label>
         <textarea name="note" rows="3" maxlength="200" placeholder="例：黒ずみと苔を落とし、文字の色を入れ直しました。"><?= h(isset($edit['note']) ? $edit['note'] : '') ?></textarea>
+        <p class="hint"><b>施工例の一覧</b>で石種の下に出ます。写真を大きく表示したときにも出ます。</p>
       </div>
 
+
+      <div class="field field--pub">
+        <label class="sw">
+          <input type="checkbox" name="pub" value="1"<?= works_is_public($edit) ? ' checked' : '' ?>>
+          <span class="sw__box" aria-hidden="true"></span>
+          <span class="sw__txt">ホームページに掲載する</span>
+        </label>
+        <p class="hint">外すと、この施工例はホームページから消えます。データと写真はこの画面に残ります。</p>
+      </div>
       <div class="field field--memo">
         <label>管理用メモ　<span class="off">サイトには出ません</span></label>
         <textarea name="memo" rows="4" maxlength="400" placeholder="例：山田様&#10;2026年7月20日施工&#10;○○霊園 3区12番"><?= h(isset($edit['memo']) ? $edit['memo'] : '') ?></textarea>
@@ -433,15 +464,26 @@ function photo_rows($caps)
         <div class="field">
           <label>石種</label>
           <input type="text" name="stone" maxlength="40" placeholder="例：庵治石">
-          <p class="hint">一覧の見出しになります。空のままでも構いません。</p>
+          <p class="hint"><b>施工例の一覧</b>で、写真のすぐ下に出ます。空のままでも構いません。</p>
         </div>
       </div>
 
       <div class="field">
         <label>一言</label>
         <textarea name="note" rows="3" maxlength="200" placeholder="例：黒ずみと苔を落とし、文字の色を入れ直しました。"></textarea>
+        <p class="hint"><b>施工例の一覧</b>で石種の下に出ます。写真を大きく表示したときにも出ます。</p>
       </div>
 
+
+      <div class="field field--pub">
+        <label class="sw">
+          <input type="checkbox" name="pub" value="1" checked>
+          <span class="sw__box" aria-hidden="true"></span>
+          <span class="sw__txt">ホームページに掲載する</span>
+        </label>
+        <p class="hint">チェックを外して登録すると、あとから一覧の「掲載する」で公開できます。
+          先に内容を確かめてから出したいときにお使いください。</p>
+      </div>
       <div class="field field--memo">
         <label>管理用メモ　<span class="off">サイトには出ません</span></label>
         <textarea name="memo" rows="4" maxlength="400" placeholder="例：山田様&#10;2026年7月20日施工&#10;○○霊園 3区12番"></textarea>
@@ -452,7 +494,8 @@ function photo_rows($caps)
 
       <button type="submit">登録する</button>
       <p class="hint" style="margin-top:10px">
-        登録すると、その場で施工例の一覧ページと各サービスページに反映されます。
+        「ホームページに掲載する」を入れたまま登録すると、その場で施工例の一覧ページと
+        各サービスページに反映されます。外してあれば、登録だけしてホームページには出ません。
       </p>
     </form>
   </div>
@@ -467,9 +510,14 @@ function photo_rows($caps)
 <?php else: ?>
   <div class="wlist">
     <?php foreach ($items as $it): $ps = works_photos($it); ?>
-      <div class="witem">
+      <div class="witem<?= works_is_public($it) ? '' : ' is-off' ?>">
         <div>
           <span class="cat"><?= h(isset($WORK_CATS[$it['cat']]) ? $WORK_CATS[$it['cat']] : $it['cat']) ?></span>
+          <?php if (works_is_public($it)): ?>
+            <span class="state on">掲載中</span>
+          <?php else: ?>
+            <span class="state">非公開</span>
+          <?php endif; ?>
           <div class="head"><?= h(works_heading($it)) ?></div>
           <?php if (!empty($it['note'])): ?><p class="note"><?= h($it['note']) ?></p><?php endif; ?>
           <?php if (!empty($it['memo'])): ?>
@@ -488,6 +536,15 @@ function photo_rows($caps)
           </p>
         </div>
         <div class="acts">
+          <form method="post" style="margin:0">
+            <input type="hidden" name="do" value="toggle">
+            <input type="hidden" name="id" value="<?= h($it['id']) ?>">
+            <?php if (works_is_public($it)): ?>
+              <button type="submit" class="ghost">掲載をやめる</button>
+            <?php else: ?>
+              <button type="submit">掲載する</button>
+            <?php endif; ?>
+          </form>
           <a class="btnlink" href="works.php?edit=<?= rawurlencode($it['id']) ?>">書き換える</a>
           <form method="post" style="margin:0" onsubmit="return confirm('この施工例を削除します。写真も一緒に消えます。よろしいですか。')">
             <input type="hidden" name="do" value="delete">

@@ -86,6 +86,26 @@ footer a{color:inherit}
 .row2{display:grid;grid-template-columns:200px 1fr;gap:18px}
 @media(max-width:600px){.row2{grid-template-columns:1fr}}
 
+/* ホームページに掲載するかどうかのスイッチ */
+.field--pub{padding:14px 16px;border:1px solid var(--ink);background:#fff}
+.sw{display:flex;align-items:center;gap:12px;cursor:pointer;margin:0}
+.sw input{position:absolute;opacity:0;width:0;height:0}
+.sw__box{flex:none;width:46px;height:26px;border:1px solid var(--rule);background:var(--soft);
+  border-radius:13px;position:relative;transition:background .25s,border-color .25s}
+.sw__box::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--stone);transition:transform .25s,background .25s}
+.sw input:checked + .sw__box{background:var(--ink);border-color:var(--ink)}
+.sw input:checked + .sw__box::after{transform:translateX(20px);background:#fff}
+.sw input:focus-visible + .sw__box{outline:2px solid var(--ink);outline-offset:2px}
+.sw__txt{font-size:14px;letter-spacing:.08em;color:var(--ink)}
+
+/* 一覧での状態 */
+.state{display:inline-block;font-size:10.5px;letter-spacing:.16em;padding:3px 9px;margin-left:6px;
+  border:1px solid var(--rule);color:var(--stone);background:var(--soft)}
+.state.on{border-color:#2d6a45;color:#2d6a45;background:#eef4f0}
+.witem.is-off{background:var(--soft)}
+.witem.is-off .head,.witem.is-off .shots{opacity:.5}
+
 /* 管理用メモ — 公開される欄と見た目で区別する */
 .off{display:inline-block;font-size:10px;letter-spacing:.14em;padding:2px 7px;
   background:var(--soft);color:var(--stone);border:1px solid var(--rule);vertical-align:2px}
@@ -110,7 +130,9 @@ footer a{color:inherit}
   background:var(--ink);color:var(--bg);margin-bottom:8px}
 .witem .head{font-size:15px;letter-spacing:.06em;
   font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif}
-.witem .note{margin:6px 0 0;font-size:13px;color:var(--stone);line-height:1.8}
+/* 汎用の .note（枠付きの囲み）とは別もの。枠と背景を打ち消しておく */
+.witem .note{margin:6px 0 0;padding:0;border:0;background:transparent;
+  font-size:13px;color:var(--stone);line-height:1.8}
 .witem .acts{display:flex;gap:8px;align-items:center}
 
 .shots{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}

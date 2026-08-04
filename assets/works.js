@@ -12,14 +12,68 @@
   'use strict';
 
   /* ==========================================================
+   * 0. 複数枚の施工例は、その場で矢印で送れるようにする
+   *
+   *    施工前・施工後を見比べたいので、いちいち大きく開かなくても
+   *    次の写真に移れるようにしておく。
+   *    いま何枚目かは、左下（サービスページでは左上）の札に出す。
+   * ======================================================== */
+  function photosOf(host) {
+    var tag = host.querySelector('.wcard__data');
+    if (!tag) return null;
+    try {
+      var d = JSON.parse(tag.textContent);
+      return (d && d.length) ? d : null;
+    } catch (err) { return null; }
+  }
+
+  document.querySelectorAll('.wcard, .work').forEach(function (host) {
+    var shots = photosOf(host);
+    if (!shots || shots.length < 2) return;
+
+    var img = host.querySelector('.wcard__img, .work__img');
+    var badge = host.querySelector('.wcard__count');
+    if (!img) return;
+    var media = img.parentElement;
+    var at = 0;
+
+    var nav = document.createElement('div');
+    nav.className = 'wnav';
+    nav.innerHTML =
+      '<button class="wnav__btn" type="button" data-p aria-label="前の写真">&#8249;</button>' +
+      '<button class="wnav__btn" type="button" data-n aria-label="次の写真">&#8250;</button>';
+    media.appendChild(nav);
+
+    function show() {
+      var s = shots[at];
+      img.src = s.src;
+      img.alt = s.alt || '';
+      img.style.display = '';                     // 前の写真が無かった場合の保険
+      if (badge) badge.textContent = (s.cap ? s.cap + '　' : '') + (at + 1) + ' / ' + shots.length;
+    }
+
+    nav.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (e.target.closest('[data-p]')) at = (at - 1 + shots.length) % shots.length;
+      else if (e.target.closest('[data-n]')) at = (at + 1) % shots.length;
+      else return;
+      show();
+    });
+
+    show();
+    host._shotAt = function () { return at; };    // 拡大表示を、いま見えている写真から開くため
+  });
+
+
+  /* ==========================================================
    * 1. 写真の拡大表示
    * ======================================================== */
   (function () {
     var opens = document.querySelectorAll('.wcard__open');
     if (!opens.length) return;
 
-    var box = null, img = null, cap = null, num = null, prevBtn = null, nextBtn = null;
-    var shots = [], at = 0, opener = null;
+    var box = null, img = null, cap = null, note = null, num = null, prevBtn = null, nextBtn = null;
+    var shots = [], at = 0, opener = null, itemNote = '';
 
     function build() {
       box = document.createElement('div');
@@ -32,7 +86,7 @@
           '<div class="lb__stage"><img class="lb__img" src="" alt=""></div>' +
           '<div class="lb__bar">' +
             '<button class="lb__nav" type="button" data-prev aria-label="前の写真">&#8249;</button>' +
-            '<p class="lb__cap"><span class="lb__text"></span><span class="lb__num"></span></p>' +
+            '<p class="lb__cap"><span class="lb__text"></span><span class="lb__note"></span><span class="lb__num"></span></p>' +
             '<button class="lb__nav" type="button" data-next aria-label="次の写真">&#8250;</button>' +
           '</div>' +
         '</div>';
@@ -40,6 +94,7 @@
 
       img     = box.querySelector('.lb__img');
       cap     = box.querySelector('.lb__text');
+      note    = box.querySelector('.lb__note');
       num     = box.querySelector('.lb__num');
       prevBtn = box.querySelector('[data-prev]');
       nextBtn = box.querySelector('[data-next]');
@@ -74,6 +129,7 @@
       img.src = s.src;
       img.alt = s.alt || '';
       cap.textContent = s.cap || '';
+      note.textContent = itemNote;
       num.textContent = shots.length > 1 ? (at + 1) + ' / ' + shots.length : '';
       prevBtn.disabled = at <= 0;
       nextBtn.disabled = at >= shots.length - 1;
@@ -87,11 +143,12 @@
       show();
     }
 
-    function open(data, start, from) {
+    function open(data, start, from, text) {
       if (!box) build();
       shots = data;
       at = start || 0;
       opener = from;
+      itemNote = text || '';
       show();
       box.hidden = false;
       document.body.classList.add('lb-open');
@@ -107,12 +164,9 @@
     Array.prototype.forEach.call(opens, function (btn) {
       btn.addEventListener('click', function () {
         var host = btn.closest('.wcard, .work');
-        var tag = host && host.querySelector('.wcard__data');
-        if (!tag) return;
-        var data;
-        try { data = JSON.parse(tag.textContent); } catch (err) { return; }
-        if (!data || !data.length) return;
-        open(data, 0, btn);
+        var data = host && photosOf(host);
+        if (!data) return;
+        open(data, host._shotAt ? host._shotAt() : 0, btn, host.dataset.note || '');
       });
     });
   })();
