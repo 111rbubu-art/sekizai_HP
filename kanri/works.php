@@ -9,7 +9,7 @@
  * 設置とパスワードの手順は同じフォルダーの README.md をご覧ください。
  */
 
-require __DIR__ . '/works_lib.php';
+require __DIR__ . '/library.php';
 session_start();
 
 define('ADD_ROWS', 4);          // 一度に選べる写真の欄の数
@@ -78,6 +78,35 @@ function upload_error_text($err)
     return 'アップロードに失敗しました（コード ' . $err . '）。';
 }
 
+/**
+ * 写真の欄ひとつぶんの出どころを返す。
+ *   ・手元のパソコンから選ばれていれば、その一時ファイル
+ *   ・サーバーの写真から選ばれていれば、その場所
+ *   ・どちらも無ければ null（その欄は使わなかったということ）
+ * サーバーの写真は library_path() を通すので、決めた場所の中のものしか使えない。
+ */
+function row_source($i, &$errs)
+{
+    if (isset($_FILES['photo']['error'][$i])) {
+        $err = $_FILES['photo']['error'][$i];
+        if ($err === UPLOAD_ERR_OK) return $_FILES['photo']['tmp_name'][$i];
+        if ($err !== UPLOAD_ERR_NO_FILE) {
+            $errs[] = '写真' . ($i + 1) . '：' . upload_error_text($err);
+            return null;
+        }
+    }
+
+    $pick = isset($_POST['pick'][$i]) ? trim($_POST['pick'][$i]) : '';
+    if ($pick === '') return null;
+
+    $path = library_path($pick);
+    if ($path === null) {
+        $errs[] = '写真' . ($i + 1) . '：選ばれた写真が見つかりませんでした。';
+        return null;
+    }
+    return $path;
+}
+
 /** 書き出した結果を、そのまま従業員に見せる文にする */
 function rebuild_message($items)
 {
@@ -117,14 +146,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errs = array();
 
         for ($i = 0; $i < ADD_ROWS; $i++) {
-            if (!isset($_FILES['photo']['error'][$i])) continue;
-            $err = $_FILES['photo']['error'][$i];
-            if ($err === UPLOAD_ERR_NO_FILE) continue;
-            if ($err !== UPLOAD_ERR_OK) {
-                $errs[] = '写真' . ($i + 1) . '：' . upload_error_text($err);
-                continue;
-            }
-            $r = works_store_photo($_FILES['photo']['tmp_name'][$i], $id, count($photos) + 1);
+            $tmp = row_source($i, $errs);
+            if ($tmp === null) continue;
+
+            $r = works_store_photo($tmp, $id, count($photos) + 1);
             if (strpos($r, 'works/photos/') !== 0) {
                 $errs[] = '写真' . ($i + 1) . '：' . $r;
                 continue;
@@ -185,11 +210,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 追加された写真
         $errs = array();
         for ($i = 0; $i < ADD_ROWS; $i++) {
-            if (!isset($_FILES['photo']['error'][$i])) continue;
-            $err = $_FILES['photo']['error'][$i];
-            if ($err === UPLOAD_ERR_NO_FILE) continue;
-            if ($err !== UPLOAD_ERR_OK) { $errs[] = '写真の追加：' . upload_error_text($err); continue; }
-            $r = works_store_photo($_FILES['photo']['tmp_name'][$i], $id, count($ps) + 1);
+            $tmp = row_source($i, $errs);
+            if ($tmp === null) continue;
+
+            $r = works_store_photo($tmp, $id, count($ps) + 1);
             if (strpos($r, 'works/photos/') !== 0) { $errs[] = $r; continue; }
             $ps[] = array('src' => $r, 'cap' => clean_text(isset($_POST['cap'][$i]) ? $_POST['cap'][$i] : '', 20));
         }
@@ -344,6 +368,10 @@ function photo_rows($caps)
         $o .= '<div class="field">';
         $o .= '<label>写真' . ($i + 1) . ($i === 0 ? '（1枚目が一覧に出ます）' : '') . '</label>';
         $o .= '<input type="file" name="photo[]" accept="image/jpeg,image/png,image/webp">';
+        $o .= '<button type="button" class="ghost mini" data-pick="pick' . $i . '" style="margin-top:7px;align-self:flex-start">'
+            . 'サーバーの写真から選ぶ</button>';
+        $o .= '<input type="hidden" name="pick[' . $i . ']" data-pick-value>';
+        $o .= '<div data-pick-view></div>';
         $o .= '<input type="text" name="cap[' . $i . ']" maxlength="20" placeholder="写真の説明（例：施工前）" style="margin-top:7px">';
         $o .= '<div class="caps">';
         foreach ($caps as $c) {
@@ -632,6 +660,7 @@ function photo_rows($caps)
 
 </div>
 
+<script src="picker.js" defer></script>
 <script>
 // 掲載する／やめる — 画面を読み込み直さずに切り替える。
 // 一覧の途中で押しても、見ている位置がそのままになるように。

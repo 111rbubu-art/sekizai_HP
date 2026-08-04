@@ -101,7 +101,10 @@ foreach ($slots as $rel => $s) {
           <?php endif; ?>
           <form method="post" action="save.php" enctype="multipart/form-data">
             <input type="hidden" name="slot" value="<?= h($rel) ?>">
-            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required>
+            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp">
+            <button type="button" class="ghost" data-pick="from">サーバーの写真から選ぶ</button>
+            <input type="hidden" name="from" data-pick-value>
+            <div data-pick-view></div>
             <button type="submit">この写真に差し替える</button>
           </form>
         </div>
@@ -120,5 +123,6 @@ foreach ($slots as $rel => $s) {
 </footer>
 
 </div>
+<script src="picker.js" defer></script>
 </body>
 </html>

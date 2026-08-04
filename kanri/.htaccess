@@ -16,8 +16,17 @@
   Header set X-Robots-Tag "noindex, nofollow"
 </IfModule>
 
-# --- 控えのフォルダーは外から見せない ---
+# --- 控えのフォルダーと覚え書きは外から見せない ---
 RedirectMatch 404 ^/kanri/_backup/
+<FilesMatch "^_libcache\.php">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
 
 # --- 中身の一覧を出さない ---
 Options -Indexes

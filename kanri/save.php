@@ -7,7 +7,7 @@
  * ・回転を直し、幅を詰めてから保存する
  */
 
-require __DIR__ . '/lib.php';
+require __DIR__ . '/library.php';
 
 session_start();
 
@@ -30,18 +30,34 @@ $slot = isset($_POST['slot']) ? $_POST['slot'] : '';
 $slots = collect_slots();
 if (!isset($slots[$slot])) back('ng', 'その置き場所は見つかりませんでした。');
 
-if (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
+/*
+ * 写真の出どころは2通り。
+ *   ・手元のパソコンから選んだ（$_FILES）
+ *   ・サーバーにすでにある写真から選んだ（$_POST['from']）
+ * どちらの場合も、このあとの扱いは同じ。
+ */
+$from = isset($_POST['from']) ? trim($_POST['from']) : '';
+$hasUpload = isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK;
+
+if (!$hasUpload && $from !== '') {
+    $tmp = library_path($from);
+    if ($tmp === null) back('ng', 'その写真は見つかりませんでした。選び直してください。');
+    if ($tmp === SITE_DIR . '/' . $slot || realpath(SITE_DIR . '/' . $slot) === $tmp) {
+        back('ng', 'いまと同じ写真です。別の写真をお選びください。');
+    }
+} elseif (!$hasUpload) {
     $e = isset($_FILES['photo']) ? $_FILES['photo']['error'] : -1;
     $msg = array(
         UPLOAD_ERR_INI_SIZE  => '写真が大きすぎます（サーバー上限 ' . ini_get('upload_max_filesize') . '）',
         UPLOAD_ERR_FORM_SIZE => '写真が大きすぎます',
         UPLOAD_ERR_PARTIAL   => '通信が途中で切れました。もう一度お試しください',
-        UPLOAD_ERR_NO_FILE   => '写真が選ばれていません',
+        UPLOAD_ERR_NO_FILE   => '写真が選ばれていません。手元のファイルを選ぶか、'
+                              . '「サーバーの写真から選ぶ」をお使いください',
     );
     back('ng', isset($msg[$e]) ? $msg[$e] : 'アップロードに失敗しました（コード ' . $e . '）');
+} else {
+    $tmp = $_FILES['photo']['tmp_name'];
 }
-
-$tmp = $_FILES['photo']['tmp_name'];
 
 // 中身が本当に画像かどうかを確かめる（拡張子は信用しない）
 $type = @exif_imagetype($tmp);
@@ -104,5 +120,7 @@ imagedestroy($im);
 if (!$saved) back('ng', '保存できませんでした。もう一度お試しください。');
 @chmod($target, 0644);
 
-back('ok', basename($slot) . ' を差し替えました（' . $w . '×' . $h . '）。'
+back('ok', basename($slot) . ' を'
+    . ($from !== '' && !$hasUpload ? 'サーバーの ' . basename($from) . ' に' : '')
+    . '差し替えました（' . $w . '×' . $h . '）。'
     . 'サイトを再読み込みしてご確認ください。');

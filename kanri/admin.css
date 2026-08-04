@@ -158,3 +158,65 @@ footer a{color:inherit}
 
 .empty{margin-top:20px;padding:28px 20px;border:1px dashed var(--rule);text-align:center;
   font-size:13px;color:var(--stone)}
+
+
+/* ============================================================
+ * サーバーの写真から選ぶ画面
+ * ========================================================== */
+
+body.pick-open{overflow:hidden}
+.pick{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+.pick[hidden]{display:none}
+.pick__back{position:absolute;inset:0;background:rgba(26,26,26,.6)}
+.pick__panel{position:relative;z-index:1;display:flex;flex-direction:column;
+  width:min(1000px,100%);height:min(760px,100%);background:var(--bg);border:1px solid var(--ink)}
+.pick__head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;border-bottom:1px solid var(--rule);background:#fff}
+.pick__head b{font-size:14px;letter-spacing:.12em;font-weight:400;
+  font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif}
+.pick__x{width:36px;height:36px;padding:0;font-size:20px;line-height:1;
+  border:0;background:transparent;color:var(--ink)}
+.pick__x:hover{background:var(--ink);color:var(--bg)}
+
+.pick__bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  padding:12px 18px;border-bottom:1px solid var(--rule);background:#fff}
+.pick__tabs{display:flex;flex-wrap:wrap;gap:6px}
+.pick__tabs button{font-size:12px;letter-spacing:.1em;padding:7px 13px;
+  background:transparent;color:var(--stone);border:1px solid var(--rule)}
+.pick__tabs button:hover{color:var(--ink);border-color:var(--rule)}
+.pick__tabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pick__search{flex:1;min-width:160px;font-size:13px;padding:8px 11px;
+  border:1px solid var(--rule);background:#fff}
+.pick__ph{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:var(--stone);
+  white-space:nowrap;cursor:pointer}
+.pick__ph input{width:auto}
+
+.pick__grid{flex:1;overflow-y:auto;padding:16px 18px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;align-content:start}
+.pick__load,.pick__empty{padding:40px 18px;text-align:center;font-size:13px;color:var(--stone)}
+
+.pcell{position:relative;display:flex;flex-direction:column;gap:5px;padding:8px;
+  background:#fff;border:1px solid var(--rule);color:var(--ink);text-align:left;
+  letter-spacing:0;transition:border-color .2s,background .2s}
+.pcell:hover{background:#fff;border-color:var(--ink)}
+.pcell__box{aspect-ratio:4/3;background:var(--soft);overflow:hidden;display:block}
+.pcell__box img{width:100%;height:100%;object-fit:cover;display:block}
+.pcell__tag{position:absolute;top:12px;left:12px;font-size:9.5px;letter-spacing:.14em;padding:2px 7px;
+  background:rgba(26,26,26,.72);color:#f7f6f3}
+.pcell__name{font-size:11px;line-height:1.5;word-break:break-all}
+.pcell__meta{font-size:10.5px;color:var(--stone)}
+
+/* 選んだ写真の見本 */
+.picked{display:inline-flex;align-items:center;gap:9px;margin-top:7px;padding:5px 9px 5px 5px;
+  background:#fff;border:1px solid var(--ink);max-width:100%}
+.picked img{width:44px;height:34px;object-fit:cover;display:block;flex:none}
+.picked__name{font-size:11.5px;line-height:1.4;word-break:break-all;min-width:0}
+.picked__x{flex:none;width:24px;height:24px;padding:0;font-size:14px;line-height:1;
+  background:transparent;color:var(--stone);border:1px solid var(--rule)}
+.picked__x:hover{background:#9c4128;color:#fff;border-color:#9c4128}
+
+@media(max-width:600px){
+  .pick{padding:0}
+  .pick__panel{height:100%;border:0}
+  .pick__grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;padding:12px}
+}
