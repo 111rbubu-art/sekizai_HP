@@ -14,7 +14,8 @@
                     "alt": "和型墓石の施工例（久我山）"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-02",
@@ -28,7 +29,8 @@
                     "alt": "洋型墓石の施工例（杉並）"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-03",
@@ -42,7 +44,8 @@
                     "alt": "デザイン墓石の施工例（練馬）"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-04",
@@ -56,7 +59,8 @@
                     "alt": "外柵・墓誌を含む一式施工の例（三鷹）"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-05",
@@ -70,7 +74,8 @@
                     "alt": "墓石全体を洗浄した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-06",
@@ -84,7 +89,8 @@
                     "alt": "苔とカビを除去した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-07",
@@ -98,7 +104,8 @@
                     "alt": "彫刻文字の色を入れ直した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-08",
@@ -112,7 +119,8 @@
                     "alt": "外柵と敷地内を清掃した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-09",
@@ -126,7 +134,8 @@
                     "alt": "新規建立にあわせて免震施工した例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-10",
@@ -140,7 +149,8 @@
                     "alt": "既存のお墓に免震パットを施工した例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-11",
@@ -154,7 +164,8 @@
                     "alt": "免震ゲルを接合面に貼り付けている様子"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-12",
@@ -168,7 +179,8 @@
                     "alt": "クリーニングとあわせて免震施工した例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-13",
@@ -182,7 +194,8 @@
                     "alt": "花立金具を交換した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-14",
@@ -196,7 +209,8 @@
                     "alt": "香炉を交換した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-15",
@@ -210,7 +224,8 @@
                     "alt": "土留を交換して据え直した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         },
         {
             "id": "seed-16",
@@ -224,7 +239,8 @@
                     "alt": "傾いたお墓を据え直した施工例"
                 }
             ],
-            "created": ""
+            "created": "",
+            "pub": true
         }
     ]
 }

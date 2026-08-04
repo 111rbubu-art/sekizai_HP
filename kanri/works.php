@@ -25,6 +25,14 @@ function go($to = 'works.php')
     exit;
 }
 
+/** JavaScript へ返事を返して終わる */
+function json_out($data)
+{
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 /** 入力された文字を整える（制御文字と前後の空白を落とし、長さを切る） */
 function clean_text($s, $max)
 {
@@ -50,6 +58,26 @@ function clean_memo($s, $max)
     return $s;
 }
 
+/** アップロードに失敗した理由を、そのまま読める言葉にする */
+function upload_error_text($err)
+{
+    switch ($err) {
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+            return '写真が大きすぎます（1枚あたりの上限 ' . ini_get('upload_max_filesize') . '）。'
+                . 'PNG は同じ写真でも JPEG の3〜8倍の容量になります。'
+                . 'JPEG で保存し直すか、kanri/.user.ini で上限を上げてください。';
+        case UPLOAD_ERR_PARTIAL:
+            return '通信が途中で切れました。もう一度お試しください。';
+        case UPLOAD_ERR_NO_TMP_DIR:
+        case UPLOAD_ERR_CANT_WRITE:
+            return 'サーバーに一時保存できませんでした。時間をおいてお試しください。';
+        case UPLOAD_ERR_EXTENSION:
+            return 'サーバー側で受け取りが止められました。';
+    }
+    return 'アップロードに失敗しました（コード ' . $err . '）。';
+}
+
 /** 書き出した結果を、そのまま従業員に見せる文にする */
 function rebuild_message($items)
 {
@@ -70,8 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 受信上限を超えると PHP は $_POST も $_FILES も捨てるので、先に分かりやすく返す
     if (!count($_POST) && !count($_FILES) && !empty($_SERVER['CONTENT_LENGTH'])) {
-        flash('ng', '写真が大きすぎます（サーバーの受信上限 ' . ini_get('post_max_size')
-            . '）。枚数を減らすか、1枚ずつお試しください。');
+        flash('ng', '写真の合計が大きすぎます（一度に送れる上限 ' . ini_get('post_max_size')
+            . '）。枚数を減らすか、1枚ずつお試しください。'
+            . 'PNG は容量が大きいので、JPEG で保存し直すのも有効です。');
         go();
     }
 
@@ -92,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $err = $_FILES['photo']['error'][$i];
             if ($err === UPLOAD_ERR_NO_FILE) continue;
             if ($err !== UPLOAD_ERR_OK) {
-                $errs[] = '写真' . ($i + 1) . '：アップロードに失敗しました（コード ' . $err . '）';
+                $errs[] = '写真' . ($i + 1) . '：' . upload_error_text($err);
                 continue;
             }
             $r = works_store_photo($_FILES['photo']['tmp_name'][$i], $id, count($photos) + 1);
@@ -159,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!isset($_FILES['photo']['error'][$i])) continue;
             $err = $_FILES['photo']['error'][$i];
             if ($err === UPLOAD_ERR_NO_FILE) continue;
-            if ($err !== UPLOAD_ERR_OK) { $errs[] = '写真の追加に失敗しました（コード ' . $err . '）'; continue; }
+            if ($err !== UPLOAD_ERR_OK) { $errs[] = '写真の追加：' . upload_error_text($err); continue; }
             $r = works_store_photo($_FILES['photo']['tmp_name'][$i], $id, count($ps) + 1);
             if (strpos($r, 'works/photos/') !== 0) { $errs[] = $r; continue; }
             $ps[] = array('src' => $r, 'cap' => clean_text(isset($_POST['cap'][$i]) ? $_POST['cap'][$i] : '', 20));
@@ -218,19 +247,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         go('works.php?edit=' . rawurlencode($id));
     }
 
-    /* --- 公開と非公開を切り替える --- */
+    /* --- 公開と非公開を切り替える ---
+     *
+     * JavaScript から呼ばれたときは、画面を読み込み直さずに返事だけ返す。
+     * 一覧の途中で押しても、見ている位置が動かないようにするため。
+     * JavaScript が無い場合は、今までどおり読み込み直す。 */
     if ($do === 'toggle') {
+        $ajax = !empty($_POST['ajax']);
         $id = isset($_POST['id']) ? $_POST['id'] : '';
         list($idx, $it) = works_find($items, $id);
-        if ($idx < 0) { flash('ng', 'その施工例は見つかりませんでした。'); go(); }
+
+        if ($idx < 0) {
+            if ($ajax) json_out(array('ok' => false, 'msg' => 'その施工例は見つかりませんでした。'));
+            flash('ng', 'その施工例は見つかりませんでした。'); go();
+        }
 
         $it['pub'] = !works_is_public($it);
         $items[$idx] = $it;
 
-        if (!works_save($items)) { flash('ng', '切り替えできませんでした。'); go(); }
+        if (!works_save($items)) {
+            if ($ajax) json_out(array('ok' => false, 'msg' => '切り替えできませんでした。'));
+            flash('ng', '切り替えできませんでした。'); go();
+        }
+
         list($t, $m) = rebuild_message($items);
-        flash($t === 'ok' ? 'ok' : 'ng',
-            ($it['pub'] ? 'ホームページに掲載しました。' : 'ホームページから外しました。データは残っています。') . $m);
+        $msg = ($it['pub'] ? 'ホームページに掲載しました。' : 'ホームページから外しました。データは残っています。');
+        if ($t !== 'ok') $msg = $m;          // うまくいかなかったときだけ、詳しく出す
+
+        if ($ajax) {
+            $pub = 0;
+            foreach ($items as $x) if (works_is_public($x)) $pub++;
+            json_out(array(
+                'ok'    => $t === 'ok',
+                'pub'   => (bool)$it['pub'],
+                'msg'   => $msg,
+                'total' => count($items),
+                'open'  => $pub,
+            ));
+        }
+
+        flash($t === 'ok' ? 'ok' : 'ng', $msg . ($t === 'ok' ? $m : ''));
         go();
     }
 
@@ -314,7 +370,7 @@ function photo_rows($caps)
     <p class="sub">庄司石材店ホームページ</p>
     <p class="count">
       登録済み <b><?= count($items) ?></b> 件　／　
-      ホームページに掲載中 <b><?= $pubCount ?></b>　非公開 <b><?= count($items) - $pubCount ?></b>
+      ホームページに掲載中 <b data-count-open><?= $pubCount ?></b>　非公開 <b data-count-off><?= count($items) - $pubCount ?></b>
     </p>
     <nav class="tabs">
       <a href="index.php">写真の入れ替え</a>
@@ -510,14 +566,12 @@ function photo_rows($caps)
 <?php else: ?>
   <div class="wlist">
     <?php foreach ($items as $it): $ps = works_photos($it); ?>
-      <div class="witem<?= works_is_public($it) ? '' : ' is-off' ?>">
+      <div class="witem<?= works_is_public($it) ? '' : ' is-off' ?>" data-item="<?= h($it['id']) ?>">
         <div>
           <span class="cat"><?= h(isset($WORK_CATS[$it['cat']]) ? $WORK_CATS[$it['cat']] : $it['cat']) ?></span>
-          <?php if (works_is_public($it)): ?>
-            <span class="state on">掲載中</span>
-          <?php else: ?>
-            <span class="state">非公開</span>
-          <?php endif; ?>
+          <span class="state<?= works_is_public($it) ? ' on' : '' ?>" data-state>
+            <?= works_is_public($it) ? '掲載中' : '非公開' ?>
+          </span>
           <div class="head"><?= h(works_heading($it)) ?></div>
           <?php if (!empty($it['note'])): ?><p class="note"><?= h($it['note']) ?></p><?php endif; ?>
           <?php if (!empty($it['memo'])): ?>
@@ -536,14 +590,12 @@ function photo_rows($caps)
           </p>
         </div>
         <div class="acts">
-          <form method="post" style="margin:0">
+          <form method="post" style="margin:0" data-toggle>
             <input type="hidden" name="do" value="toggle">
             <input type="hidden" name="id" value="<?= h($it['id']) ?>">
-            <?php if (works_is_public($it)): ?>
-              <button type="submit" class="ghost">掲載をやめる</button>
-            <?php else: ?>
-              <button type="submit">掲載する</button>
-            <?php endif; ?>
+            <button type="submit" class="<?= works_is_public($it) ? 'ghost' : '' ?>" data-toggle-btn>
+              <?= works_is_public($it) ? '掲載をやめる' : '掲載する' ?>
+            </button>
           </form>
           <a class="btnlink" href="works.php?edit=<?= rawurlencode($it['id']) ?>">書き換える</a>
           <form method="post" style="margin:0" onsubmit="return confirm('この施工例を削除します。写真も一緒に消えます。よろしいですか。')">
@@ -581,6 +633,57 @@ function photo_rows($caps)
 </div>
 
 <script>
+// 掲載する／やめる — 画面を読み込み直さずに切り替える。
+// 一覧の途中で押しても、見ている位置がそのままになるように。
+// JavaScript が動かない環境では、ふつうに送信されて読み込み直される。
+document.querySelectorAll('form[data-toggle]').forEach(function (form) {
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var item = form.closest('.witem');
+    var btn  = form.querySelector('[data-toggle-btn]');
+    var tag  = item.querySelector('[data-state]');
+    if (btn.disabled) return;
+    btn.disabled = true;
+
+    var body = new FormData(form);
+    body.append('ajax', '1');
+
+    fetch('works.php', { method: 'POST', body: body, credentials: 'same-origin' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || d.msg === undefined) throw new Error('返事がありません');
+        item.classList.toggle('is-off', !d.pub);
+        tag.textContent = d.pub ? '掲載中' : '非公開';
+        tag.classList.toggle('on', d.pub);
+        btn.textContent = d.pub ? '掲載をやめる' : '掲載する';
+        btn.classList.toggle('ghost', d.pub);
+
+        var open = document.querySelector('[data-count-open]');
+        var off  = document.querySelector('[data-count-off]');
+        if (open) open.textContent = d.open;
+        if (off)  off.textContent = d.total - d.open;
+
+        say(item, d.ok ? 'ok' : 'ng', d.msg);
+      })
+      .catch(function () {
+        say(item, 'ng', '切り替えできませんでした。通信の状態をご確認のうえ、画面を読み込み直してください。');
+      })
+      .then(function () { btn.disabled = false; });
+  });
+});
+
+// 押した施工例のすぐそばに、短く結果を出す
+function say(item, type, msg) {
+  var old = item.querySelector('.said');
+  if (old) old.remove();
+  var el = document.createElement('p');
+  el.className = 'said ' + type;
+  el.textContent = msg;
+  item.appendChild(el);
+  clearTimeout(say.timer);
+  say.timer = setTimeout(function () { el.remove(); }, 6000);
+}
+
 // 「施工前」などのボタンを押したら、すぐ上の入力欄に入れる
 document.addEventListener('click', function (e) {
   var b = e.target.closest('[data-fill]');

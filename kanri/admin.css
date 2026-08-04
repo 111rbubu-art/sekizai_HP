@@ -99,12 +99,25 @@ footer a{color:inherit}
 .sw input:focus-visible + .sw__box{outline:2px solid var(--ink);outline-offset:2px}
 .sw__txt{font-size:14px;letter-spacing:.08em;color:var(--ink)}
 
-/* 一覧での状態 */
-.state{display:inline-block;font-size:10.5px;letter-spacing:.16em;padding:3px 9px;margin-left:6px;
-  border:1px solid var(--rule);color:var(--stone);background:var(--soft)}
-.state.on{border-color:#2d6a45;color:#2d6a45;background:#eef4f0}
-.witem.is-off{background:var(--soft)}
-.witem.is-off .head,.witem.is-off .shots{opacity:.5}
+/* 一覧での状態 — ひと目で分かるように、塗りつぶした札にする */
+.state{display:inline-block;margin-left:8px;padding:5px 14px;
+  font-size:12px;font-weight:600;letter-spacing:.18em;line-height:1.4;
+  color:#fff;background:#8a8577;border:1px solid #8a8577;
+  transition:background .25s,border-color .25s}
+.state.on{background:#2d6a45;border-color:#2d6a45}
+
+/* 掲載中と非公開を、行ごと見分けられるようにする */
+.witem{border-left:4px solid #2d6a45}
+.witem.is-off{background:var(--soft);border-left-color:#b9b3a4}
+.witem.is-off .head,.witem.is-off .shots,.witem.is-off .note{opacity:.55}
+
+/* 切り替えの結果を、押した施工例の下に短く出す */
+.said{grid-column:1/-1;margin:4px 0 0;padding:9px 13px;
+  font-size:12.5px;line-height:1.7;border:1px solid var(--rule);background:#fff;color:var(--stone)}
+.said.ng{border-color:#9c4128;background:#f7ece8;color:#7d3320}
+
+/* 分類と状態の札は必ず横並びに（枠が細くなっても折り返さない） */
+.witem .cat,.witem .state{vertical-align:middle}
 
 /* 管理用メモ — 公開される欄と見た目で区別する */
 .off{display:inline-block;font-size:10px;letter-spacing:.14em;padding:2px 7px;
